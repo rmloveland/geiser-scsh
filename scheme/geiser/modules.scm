@@ -9,44 +9,53 @@
 
 ;; Start date: Mon Mar 02, 2009 02:00
 
-(define-module (geiser modules)
-  #:export (symbol-module
-            module-name?
-            module-path
-            find-module
-            all-modules
-            submodules
-            module-location)
-  #:use-module (geiser utils)
-  #:use-module (system vm program)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 session)
-  #:use-module (srfi srfi-1))
+(define-structure geiser-modules
+  (export 
+   module-name? 			; Check.
+   symbol-module
+   module-location
+   find-module
+   module-path
+   submodules
+   all-modules
+   )
+  (open
+   scheme
+   srfi-1
+   re-old-funs
+   geiser-utils)
+
+  ;; #:use-module (system vm program)
+  ;; #:use-module (ice-9 session)
+(begin
 
 (define (module-name? module-name)
-  (and (list? module-name)
-       (not (null? module-name))
-       (every symbol? module-name)))
+  (and (symbol? module-name)
+       (list module-name)))
 
 (define (symbol-module sym . all)
-  (and sym
-       (catch 'module-name
-         (lambda ()
-           (apropos-fold (lambda (module name var init)
-                           (if (eq? name sym)
-                               (throw 'module-name (module-name module))
-                               init))
-                         #f
-                         (regexp-quote (symbol->string sym))
-                         (if (or (null? all) (not (car all)))
-                             (apropos-fold-accessible (current-module))
-                             apropos-fold-all)))
-         (lambda (key . args)
-           (and (eq? key 'module-name) (car args))))))
+  ;; Symbol . ??? -> List
+  
+
+  ;; (and sym
+  ;;      (catch 'module-name
+  ;;        (lambda ()
+  ;;          (apropos-fold (lambda (module name var init)
+  ;;                          (if (eq? name sym)
+  ;;                              (throw 'module-name (module-name module))
+  ;;                              init))
+  ;;                        #f
+  ;;                        (regexp-quote (symbol->string sym))
+  ;;                        (if (or (null? all) (not (car all)))
+  ;;                            (apropos-fold-accessible (current-module))
+  ;;                            apropos-fold-all)))
+  ;;        (lambda (key . args)
+  ;;          (and (eq? key 'module-name) (car args))))))
 
 (define (module-location name)
   (make-location (module-path name) #f))
 
+;; FIXME: Need to find an analog to Guile's `resolve-module'
 (define (find-module mod-name)
   (and (module-name? mod-name)
        (resolve-module mod-name #f #:ensure #f)))
