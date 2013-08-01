@@ -1,0 +1,12 @@
+#+title: Geiser scsh TODO
+#+author: Rich Loveland
+#+email: r@rmloveland.com
+
+* TODO Port modules.scm to scsh
+
+* TODO Add scsh to Geiser's list of active implementations
+
+  Figure out how to do this the right way at Geiser load time, so the user doesn't have to
+  do M-x customize.
+
+* DONE Port utils.scm to scsh
