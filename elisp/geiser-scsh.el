@@ -143,14 +143,15 @@ effect on new REPLs. For existing ones, use the command
 (defun geiser-scsh--parameters ()
   "Return a list with all parameters needed to start Scsh.
 This function uses `geiser-scsh-init-file' if it exists."
-  (let ((init-file (and (stringp geiser-scsh-init-file)
-                        (expand-file-name geiser-scsh-init-file)))
-        (q-flags (and (not geiser-scsh-load-init-file-p) '("-q"))))
-  `(,@(and (listp geiser-scsh-binary) (cdr geiser-scsh-binary))
-    ,@q-flags "-L" ,(expand-file-name "scsh/" geiser-scheme-dir)
-    ,@(apply 'append (mapcar (lambda (p) (list "-L" p))
-                             geiser-scsh-load-path))
-    ,@(and init-file (file-readable-p init-file) (list "-l" init-file)))))
+  '())
+  ;; (let ((init-file (and (stringp geiser-scsh-init-file)
+  ;;                       (expand-file-name geiser-scsh-init-file)))
+  ;;       (q-flags (and (not geiser-scsh-load-init-file-p) '("-q"))))
+  ;; `(,@(and (listp geiser-scsh-binary) (cdr geiser-scsh-binary))
+  ;;   ,@q-flags "-L" ,(expand-file-name "scsh/" geiser-scheme-dir)
+  ;;   ,@(apply 'append (mapcar (lambda (p) (list "-L" p))
+  ;;                            geiser-scsh-load-path))
+  ;;   ,@(and init-file (file-readable-p init-file) (list "-l" init-file)))))
 
 (defvar geiser-scsh--prompt-regexp "^[0-9]?> ")
 (defvar geiser-scsh--debugger-prompt-regexp "^inspect: ")
@@ -164,11 +165,11 @@ This function uses `geiser-scsh-init-file' if it exists."
 ;; processor commands. A first guess at each is in the comments.
 (defun geiser-scsh--geiser-procedure (proc &rest args)
   (case proc
-    ((eval compile) (format ",geiser-eval %s %s%s" ;; ,run
+    ((eval compile) (format ",run %s %s%s" ;; ,run
                             (or (car args) "#f")
                             (geiser-scsh--linearize-args (cdr args))
                             (if (cddr args) "" " ()")))
-    ((load-file compile-file) (format ",geiser-load-file %s" (car args))) ;; ,load
+    ((load-file compile-file) (format ",load %s" (car args))) ;; ,load
     ((no-values) ",geiser-no-values") ;; ???
     (t (format "ge:%s (%s)" proc (geiser-scsh--linearize-args args)))))
 
