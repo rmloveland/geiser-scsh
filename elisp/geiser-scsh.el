@@ -80,12 +80,12 @@ If `t', Geiser will use `next-error' to jump to the error's location."
   :type 'boolean
   :group 'geiser-scsh)
 
-(geiser-custom--defcustom geiser-scsh-show-debug-help-p t
+(geiser-custom--defcustom geiser-scsh-show-debug-help-p nil
   "Whether to show brief help in the echo area when entering the debugger."
   :type 'boolean
   :group 'geiser-scsh)
 
-(geiser-custom--defcustom geiser-scsh-warning-level 'medium
+(geiser-custom--defcustom geiser-scsh-warning-level 'none
   "Verbosity of the warnings reported by Scsh.
 
 You can either choose one of the predefined warning sets, or
@@ -108,7 +108,6 @@ effect on new REPLs. For existing ones, use the command
                  (repeat :tag "Custom" symbol))
   :group 'geiser-scsh)
 
-;; FIXME: Add to this, especially for SREs. See your file scheme48.el.
 (geiser-custom--defcustom geiser-scsh-extra-keywords nil
   "Extra keywords highlighted in Scsh scheme buffers."
   :type '(repeat string)
@@ -124,7 +123,6 @@ effect on new REPLs. For existing ones, use the command
   :type 'boolean
   :group 'geiser-scsh)
 
-;; FIXME: Set this once you've completed the Texinfo conversion work.
 (geiser-custom--defcustom geiser-scsh-manual-lookup-nodes
                           '("scsh")
   "List of info nodes that, when present, are used for manual lookups"
@@ -139,7 +137,6 @@ effect on new REPLs. For existing ones, use the command
       (car geiser-scsh-binary)
     geiser-scsh-binary))
 
-;; FIXME: This may need to be rewritten to jibe with Scsh's worldview.
 (defun geiser-scsh--parameters ()
   "Return a list with all parameters needed to start Scsh.
 This function uses `geiser-scsh-init-file' if it exists."
@@ -165,12 +162,12 @@ This function uses `geiser-scsh-init-file' if it exists."
 ;; processor commands. A first guess at each is in the comments.
 (defun geiser-scsh--geiser-procedure (proc &rest args)
   (case proc
-    ((eval compile) (format ",run %s %s%s" ;; ,run
+    ((eval compile) (format ",run %s %s%s"
                             (or (car args) "#f")
                             (geiser-scsh--linearize-args (cdr args))
                             (if (cddr args) "" " ()")))
-    ((load-file compile-file) (format ",load %s" (car args))) ;; ,load
-    ((no-values) ",geiser-no-values") ;; ???
+    ((load-file compile-file) (format ",load %s" (car args)))
+    ((no-values) "")
     (t (format "ge:%s (%s)" proc (geiser-scsh--linearize-args args)))))
 
 (defvar geiser-scsh--module-re
@@ -207,11 +204,10 @@ This function uses `geiser-scsh-init-file' if it exists."
 (defun geiser-scsh--import-command (module)
   (geiser-scsh--module-cmd module ",open %s"))
 
-;; FIXME: Translate for scsh.
 (defun geiser-scsh--enter-command (module)
-  (geiser-scsh--module-cmd module ",%s" "user"))
+  (geiser-scsh--module-cmd module ",%s" module))
 
-(defun geiser-scsh--exit-command () ",quit")
+(defun geiser-scsh--exit-command () ",exit")
 
 (defun geiser-scsh--symbol-begin (module)
   (if module
@@ -220,35 +216,7 @@ This function uses `geiser-scsh-init-file' if it exists."
     (save-excursion (skip-syntax-backward "^-()>") (point))))
 
 
-;;; Error display
-
-;;; I don't think these are needed for Scsh (yet).
-
-;; (defun geiser-scsh--enter-debugger ()
-;;   (let ((bt-cmd (format ",geiser-newline\n,error-message\n,%s\n"
-;;                         (if geiser-scsh-debug-show-bt-p "bt" "fr"))))
-;;     (compilation-forget-errors)
-;;     (goto-char (point-max))
-;;     (geiser-repl--prepare-send)
-;;     (comint-send-string nil bt-cmd)
-;;     (when geiser-scsh-show-debug-help-p
-;;       (message "Debug REPL. Enter ,q to quit, ,h for help."))
-;;     (when geiser-scsh-jump-on-debug-p
-;;       (accept-process-output (get-buffer-process (current-buffer))
-;;                              0.2 nil t)
-;;       (ignore-errors (next-error)))))
-
-(defun geiser-scsh--display-error (module key msg)
-  (newline)
-  (when (stringp msg)
-    (save-excursion (insert msg))
-    (geiser-edit--buttonize-files))
-  (and (not key) msg (not (zerop (length msg)))))
-
-
 ;;; Trying to ascertain whether a buffer is Scsh Scheme:
-
-;;; FIXME: Fix for scsh; it's (maybe?) not as straightforward as Guile.
 
 (defvar geiser-scsh--guess-re
   (format "\\(%s\\|#! *.+\\(/\\| \\)scsh\\( *\\\\\\)?\\)"
@@ -338,7 +306,7 @@ it spawn a server thread."
                                                     compilation-error-face)))
   (let ((geiser-log-verbose-p t))
     (when remote (geiser-scsh--set-load-path))
-    (geiser-eval--send/wait ",use (geiser emacs)\n'done")
+    (geiser-eval--send/wait ",open geiser-emacs\n")
     (geiser-scsh-update-warning-level)))
 
 
@@ -399,11 +367,6 @@ it spawn a server thread."
   (marshall-procedure geiser-scsh--geiser-procedure)
   (keywords geiser-scsh--keywords)
   (case-sensitive geiser-scsh-case-sensitive-p))
-
-;; Starter version, shouldn't be needed anymore.
-;; (define-geiser-implementation scsh (binary "/usr/local/bin/scsh")
-;; 	 (prompt-regexp "^[0-9]?> ")
-;; 	 (debugger-prompt-regexp "^inspect: "))
 
 (geiser-impl--add-to-alist 'regexp "\\.scm$" 'scsh t)
 
