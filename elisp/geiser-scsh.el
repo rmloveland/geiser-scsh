@@ -216,6 +216,28 @@ This function uses `geiser-scsh-init-file' if it exists."
     (save-excursion (skip-syntax-backward "^-()>") (point))))
 
 
+;;; Error display
+
+(defun geiser-scsh--enter-debugger ()
+  (let ((bt-cmd (format ",condition\n,debug\n")))
+    ;; (if geiser-scsh-debug-show-bt-p "bt" "fr"))))
+    (compilation-forget-errors)
+    (goto-char (point-max))
+    (geiser-repl--prepare-send)
+    (comint-send-string nil bt-cmd)
+    (when geiser-scsh-show-debug-help-p
+      (message "Debug REPL. Enter ,q to quit, ,h for help."))
+    (when geiser-scsh-jump-on-debug-p
+      (accept-process-output (get-buffer-process (current-buffer))
+                             0.2 nil t)
+      (ignore-errors (next-error)))))
+
+(defun geiser-scsh--display-error (module key msg)
+  (newline)
+  (when (stringp msg)
+    (save-excursion (insert msg))))
+
+
 ;;; Trying to ascertain whether a buffer is Scsh Scheme:
 
 (defvar geiser-scsh--guess-re
@@ -291,9 +313,13 @@ it spawn a server thread."
 (defun geiser-scsh--set-load-path ()
   (let* ((path (expand-file-name "scsh/" geiser-scheme-dir))
          (witness "geiser/emacs.scm")
-         (code `(begin (if (not (%search-load-path ,witness))
-                           (set! %load-path (cons ,path %load-path)))
-                       'done)))
+         ;; (code `(begin (if (not (%search-load-path ,witness))
+         ;;                    (set! %load-path (cons ,path %load-path)))
+         ;;                'done))
+	 (code `(begin (if (not (member ,witness (lib-dirs)))
+			   (lib-dirs-append! ,path))
+		       'done))
+	 )
     (geiser-eval--send/wait code)))
 
 (defun geiser-scsh--startup (remote)
@@ -303,9 +329,13 @@ it spawn a server thread."
   (compilation-setup t)
   (font-lock-add-keywords nil
                           `((,geiser-scsh--path-rx 1
-                                                    compilation-error-face)))
-  (let ((geiser-log-verbose-p t))
+						   compilation-error-face)))
+  (let* ((geiser-log-verbose-p t)
+         (path (expand-file-name "scsh/" geiser-scheme-dir))
+	 (load-cmd (format ",config ,load %s" path)))
     (when remote (geiser-scsh--set-load-path))
+    ;; (geiser-eval--send/wait ",open geiser-emacs\n")
+    (geiser-eval--send/wait load-cmd 5)
     (geiser-eval--send/wait ",open geiser-emacs\n")
     (geiser-scsh-update-warning-level)))
 
@@ -344,16 +374,21 @@ it spawn a server thread."
 
 ;; This should load the geiser-specific Scheme code, such as
 ;; `completions' and friends. Not ready yet though.
-;;   (arglist geiser-scsh--parameters)
+
 ;; More study needed.
-;;   (repl-startup geiser-scsh--startup)
+
 ;; Doesn't seem necessary.
-;;   (enter-debugger geiser-scsh--enter-debugger)
+
 ;; This should work fine after the Info manual is ready. Don't forget
 ;; to search the Scheme 48 manual and R5RS as well!
-;;   (external-help scsh--manual-look-up)
 
 (define-geiser-implementation scsh
+  (arglist geiser-scsh--parameters)
+  (repl-startup geiser-scsh--startup)
+  (enter-debugger geiser-scsh--enter-debugger)
+
+  (external-help scsh--manual-look-up)
+;;
   (binary geiser-scsh--binary)
   (prompt-regexp geiser-scsh--prompt-regexp)
   (debugger-prompt-regexp geiser-scsh--debugger-prompt-regexp)
