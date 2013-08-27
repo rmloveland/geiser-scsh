@@ -8,15 +8,14 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-;; Start date: Mon Mar 02, 2009 01:48
-
 (define-structure geiser-utils
   (export make-location
 	  symbol->object
 	  pair->list
 	  sort-symbols!
 	  make-symbol-sort
-	  gensym?)
+	  gensym?
+	  bound?)
   (open scheme
 	big-util
 	re-old-funs
