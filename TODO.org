@@ -2,11 +2,20 @@
 #+author: Rich Loveland
 #+email: r@rmloveland.com
 
-* TODO Port modules.scm to scsh
+* TODO Port remaining Scheme files
 
-* TODO Add scsh to Geiser's list of active implementations
+  - [ ] doc.scm
+  - [ ] emacs.scm
+  - [ ] evaluation.scm
+  - [X] xref.scm (depends on doc.scm)
+
+* TODO Add scsh to Geiser's list of active implementations programmatically
 
   Figure out how to do this the right way at Geiser load time, so the user doesn't have to
   do M-x customize.
+
+* DONE Port completion.scm
+
+* DONE Port modules.scm
 
 * DONE Port utils.scm to scsh
