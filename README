@@ -5,14 +5,20 @@ This is an attempt to make Scsh one of the implementations supported
 by Geiser (http://geiser.nongnu.org).
 
 Right now hardly anything works. The port is still in progress. And by
-``port'', we mean only that the most basic possible versions of all of
-the interfaces are exported by each module. For example, in cases when
-a procedure can return '() or #f, we do so.
+``port'', we mean the most basic possible versions of the interfaces
+are exported by each module. For example, in many cases when a
+procedure can return '() or #f, we do so (pending a better solution to
+be implemented later, of course).
 
 For the moment we're only targeting Scsh 0.6.7, the latest
 ``official'' release from 2006 or so (available at
-http://www.scsh.net). Once it's up and running, we can think about adding
-support for the newer version being developed here:
-https://github.com/scheme/scsh
+http://www.scsh.net). Once it's up and running, we can think about
+adding support for the newer version being developed here:
+https://github.com/scheme/scsh. I really don't know what's involved,
+though.
 
-Help from wizardly Scheme hackers is, of course, welcome.
+Help from any interested Scheme hackers is, of course, welcome.
+
+(Note that a complementary project is also underway to convert the
+Scsh manual to Texinfo here:
+https://github.com/rmloveland/scsh-manual-texinfo)
