@@ -4,9 +4,13 @@
 
 * TODO Port remaining Scheme files
 
-  - [ ] doc.scm
+  Note that we use the term ``port'' lightly; we mean simply that the
+  most basic, nonfunctional versions of all of the interfaces are
+  exported by each module.
+
   - [ ] emacs.scm
   - [ ] evaluation.scm
+  - [X] doc.scm
   - [X] xref.scm (depends on doc.scm)
 
 * TODO Add scsh to Geiser's list of active implementations programmatically
