@@ -1,58 +1,56 @@
 ;;; emacs.scm -- procedures for emacs interaction: entry point
 
 ;; Copyright (C) 2009, 2010, 2011 Jose Antonio Ortega Ruiz
+;; Copyright (C) 2013 Rich Loveland
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the Modified BSD License. You should
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-;; Start date: Sun Feb 08, 2009 18:39
+(define-structure geiser-emacs
+  (export '())
+  (open
+   scheme
+   geiser-evaluation
+   command-processor
+   ;; TODO: Figure out how to do the below export prefixing with the
+   ;; S48 module system.
+   geiser-modules		  ; renamer (symbol-prefix-proc 'ge: )
+   geiser-completion		  ; renamer (symbol-prefix-proc 'ge: )
+   geiser-xref			  ; renamer (symbol-prefix-proc 'ge: )
+   geiser-doc			 ; renamer (symbol-prefix-proc 'ge: )
+   )
 
-(define-module (geiser emacs)
-  #:use-module (ice-9 match)
-  #:use-module (system repl command)
-  #:use-module (system repl error-handling)
-  #:use-module (system repl server)
-  #:use-module (geiser evaluation)
-  #:use-module ((geiser modules) #:renamer (symbol-prefix-proc 'ge:))
-  #:use-module ((geiser completion) #:renamer (symbol-prefix-proc 'ge:))
-  #:use-module ((geiser xref) #:renamer (symbol-prefix-proc 'ge:))
-  #:use-module ((geiser doc) #:renamer (symbol-prefix-proc 'ge:)))
+(begin
 
 (define this-module (resolve-module '(geiser emacs)))
 
-(define-meta-command ((geiser-no-values geiser) repl)
-  "geiser-no-values
-No-op command used internally by Geiser."
+(define-command-syntax 'geiser-no-values "<>"
+  "No-op command used internally by Geiser."
+  ())
+
+(define (geiser-no-values)
   (values))
 
-(define-meta-command ((geiser-newline geiser) repl)
-  "geiser-newline
-Meta-command used by Geiser to emit a new line."
+(define-command-syntax 'geiser-newline "No args"
+  "Used by Geiser to emit a newline."
   (newline))
 
-(define-meta-command ((geiser-eval geiser) repl (mod form args) . rest)
-  "geiser-eval module form args ()
-Meta-command used by Geiser to evaluate and compile code."
+(define-command-syntax 'geiser-eval "<module> <form> <args>"
+  "Used by Geiser to evaluate code."
+  '(module form args))
+
+(define (geiser-eval module form args)
   (if (null? args)
-      (call-with-error-handling
-       (lambda () (ge:compile form mod)))
       (let ((proc (eval form this-module)))
         (ge:eval `(,proc ,@args) mod))))
 
-(define-meta-command ((geiser-load-file geiser) repl file)
-  "geiser-load-file file
-Meta-command used by Geiser to load and compile files."
-  (call-with-error-handling
-   (lambda () (ge:compile-file file))))
+(define-command-syntax 'geiser-load-file "<file>"
+  "Used by geiser to load files."
+  '(file))
 
+(define (geiser-load-file file)
+  (ge:load-file file))
 
-(define-meta-command ((geiser-start-server geiser) repl)
-  "geiser-start-server
-Meta-command used by Geiser to start a REPL server."
-  (let* ((sock (make-tcp-server-socket #:port 0))
-         (port (sockaddr:port (getsockname sock))))
-    (spawn-server sock)
-    (write (list 'port port))
-    (newline)))
+))
