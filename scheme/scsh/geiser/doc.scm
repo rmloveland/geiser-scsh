@@ -141,7 +141,7 @@
   (let ((args (obj-args obj)))
     (and args (signature sym args))))
 
-(define (symbol-documentation sym)	
+(define (ge:symbol-documentation sym)	
   (let ((obj (symbol->object sym)))
     (if obj
         `(("signature" . ,(or (obj-signature sym obj) sym))

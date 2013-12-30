@@ -38,7 +38,7 @@
   (export ge:autodoc
 	  module-exports
 	  object-signature
-	  symbol-documentation))
+	  ge:symbol-documentation))
 
 (define-interface geiser-completion-interface
   (export ge:completions 
