@@ -8,23 +8,6 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-(define-structure geiser-utils
-  (export make-location
-	  symbol->object
-	  pair->list
-	  sort-symbols!
-	  make-symbol-sort
-	  gensym?
-	  bound?)
-  (open scheme
-	big-util
-	re-old-funs
-	formats
-	sorting
-	packages
-	command-processor)
-(begin
-
 (define (symbol->object sym)
   (and (symbol? sym)
        (bound? sym)))
@@ -59,5 +42,3 @@
 
 (define (gensym-name? name)
   (and (string-match "^#[{]" name) #t))
-
-))

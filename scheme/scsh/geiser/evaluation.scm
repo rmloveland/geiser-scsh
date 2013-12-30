@@ -8,30 +8,6 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-(define-structure geiser-evaluation
-  (export 
-   ge:eval
-   ge:macroexpand
-   ge:load-file
-   ge:set-warnings
-   ge:add-to-load-path
-   )
-  (open 
-   scheme
-   scsh
-   command-processor
-   extended-ports
-   environments
-   packages
-   syntactic
-   geiser-modules
-   nodes
-   srfi-1
-   pp
-   )
-
-(begin
-
 (define compile-opts '())
 (define compile-file-opts '())
 
@@ -73,7 +49,7 @@
 
 (define (expand* form . all)
   (let ((env (package->environment (environment-for-commands))))
-    (schemify (expand-form (or (car form) form) env) env)))
+    (schemify (expand-form (or form (car form)) env) env)))
 
 (define ge:macroexpand expand*)
 
@@ -82,5 +58,3 @@
        (not (member dir (lib-dirs)))
        (begin (lib-dirs-append! dir))
               #t))
-
-))

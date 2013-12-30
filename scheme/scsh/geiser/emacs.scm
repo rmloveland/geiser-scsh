@@ -8,27 +8,11 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-(define-structure geiser-emacs
-  (export '())
-  (open
-   scheme
-   geiser-evaluation
-   command-processor
-   ;; TODO: Figure out how to do the below export prefixing with the
-   ;; S48 module system.
-   geiser-modules		  ; renamer (symbol-prefix-proc 'ge: )
-   geiser-completion		  ; renamer (symbol-prefix-proc 'ge: )
-   geiser-xref			  ; renamer (symbol-prefix-proc 'ge: )
-   geiser-doc			 ; renamer (symbol-prefix-proc 'ge: )
-   )
-
-(begin
-
-(define this-module (resolve-module '(geiser emacs)))
+(define this-module (resolve-module '(geiser emacs) #f 0 #f))
 
 (define-command-syntax 'geiser-no-values "<>"
   "No-op command used internally by Geiser."
-  ())
+  '())
 
 (define (geiser-no-values)
   (values))
@@ -44,7 +28,7 @@
 (define (geiser-eval module form args)
   (if (null? args)
       (let ((proc (eval form this-module)))
-        (ge:eval `(,proc ,@args) mod))))
+        (ge:eval `(,proc ,@args) module))))
 
 (define-command-syntax 'geiser-load-file "<file>"
   "Used by geiser to load files."
@@ -52,5 +36,3 @@
 
 (define (geiser-load-file file)
   (ge:load-file file))
-
-))

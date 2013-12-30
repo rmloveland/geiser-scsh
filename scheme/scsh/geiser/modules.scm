@@ -8,22 +8,6 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-(define-structure geiser-modules
-  (export 
-   module-name?
-   symbol-module
-   module-location
-   find-module
-   module-path
-   submodules
-   all-modules)
-  (open
-   scheme
-   srfi-1
-   re-old-funs
-   geiser-utils)
-(begin
-
 (define (module-name? module-name)
   (and (symbol? module-name)
        (list module-name)))
@@ -61,7 +45,7 @@
   '())
 
 (define (root-modules)
-  (submodules (resolve-module '() #f)))
+  (submodules (resolve-module '() #f 0 #f)))
 
 (define (resolve-module name autoload version ensure)
   #f)
@@ -70,5 +54,3 @@
 (define (all-modules)
   ;; -> List
   (cons "(scsh)" '()))
-
-))

@@ -8,25 +8,6 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-(define-structure geiser-doc
-  (export
-   autodoc
-   module-exports
-   object-signature
-   symbol-documentation)
-  (open 
-   scheme
-   scsh
-   geiser-utils
-   geiser-modules
-   srfi-1
-   syntactic
-   pp
-   random
-   tables)
-
-(begin
-
 (define (signature id args-list)
   (let ((value (symbol->object id)))
     (if value
@@ -60,7 +41,7 @@
          `(,@(signature id args)
            ("module" . ,(symbol-module id))))))
 
-(define (autodoc ids)
+(define (ge:autodoc ids)
   (if (not (list? ids))
       '()
       (map (lambda (id) (or (%autodoc id) (list id))) ids)))
@@ -199,5 +180,3 @@
 	'("procs")
 	'("syntax")
 	'("vars")))
-
-))

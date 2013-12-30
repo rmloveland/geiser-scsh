@@ -8,23 +8,8 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-(define-structure geiser-completion
-  (export 
-   completions 
-   module-completions
-   )
-  (open
-   scheme
-   geiser-utils
-   geiser-modules
-   )
-
-(begin
-
-(define (completions prefix)
+(define (ge:completions prefix)
   '())
 
-(define (module-completions prefix)
+(define (ge:module-completions prefix)
   '())
-
-))
