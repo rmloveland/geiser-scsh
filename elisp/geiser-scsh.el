@@ -8,10 +8,6 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-;; Start date: Sun Mar 08, 2009 23:03
-
-
-
 (require 'geiser-connection)
 (require 'geiser-syntax)
 (require 'geiser-custom)
@@ -26,7 +22,6 @@
 
 (eval-when-compile (require 'cl))
 
-
 ;;; Customization:
 
 (defgroup geiser-scsh nil
@@ -47,11 +42,7 @@ started."
   :type '(repeat file)
   :group 'geiser-scsh)
 
-;;; I don't think scsh has an exact analogue for this
-;;; functionality. Instead you specify startup files in the script
-;;; header itself.
-
-(geiser-custom--defcustom geiser-scsh-init-file "~/.scsh-geiser"
+(geiser-custom--defcustom geiser-scsh-init-file ""
   "Initialization file with user code for the Scsh REPL.
 If all you want is to load ~/.scsh, set
 `geiser-scsh-load-init-file-p' instead."
@@ -65,8 +56,6 @@ file, using `geiser-scsh-init-file' is not equivalent to setting
 this variable to t."
   :type 'boolean
   :group 'geiser-scsh)
-
-;;; Also not relevant for scsh.
 
 (geiser-custom--defcustom geiser-scsh-debug-show-bt-p nil
   "Whether to autmatically show a full backtrace when entering the debugger.
@@ -123,13 +112,11 @@ effect on new REPLs. For existing ones, use the command
   :type 'boolean
   :group 'geiser-scsh)
 
-(geiser-custom--defcustom geiser-scsh-manual-lookup-nodes
-                          '("scsh")
+(geiser-custom--defcustom geiser-scsh-manual-lookup-nodes nil
   "List of info nodes that, when present, are used for manual lookups"
   :type '(repeat string)
   :group 'geiser-scsh)
 
-
 ;;; REPL support:
 
 (defun geiser-scsh--binary ()
@@ -141,37 +128,28 @@ effect on new REPLs. For existing ones, use the command
   "Return a list with all parameters needed to start Scsh.
 This function uses `geiser-scsh-init-file' if it exists."
   '())
-  ;; (let ((init-file (and (stringp geiser-scsh-init-file)
-  ;;                       (expand-file-name geiser-scsh-init-file)))
-  ;;       (q-flags (and (not geiser-scsh-load-init-file-p) '("-q"))))
-  ;; `(,@(and (listp geiser-scsh-binary) (cdr geiser-scsh-binary))
-  ;;   ,@q-flags "-L" ,(expand-file-name "scsh/" geiser-scheme-dir)
-  ;;   ,@(apply 'append (mapcar (lambda (p) (list "-L" p))
-  ;;                            geiser-scsh-load-path))
-  ;;   ,@(and init-file (file-readable-p init-file) (list "-l" init-file)))))
 
 (defvar geiser-scsh--prompt-regexp "^[0-9]?> ")
 (defvar geiser-scsh--debugger-prompt-regexp "^inspect: ")
 
-
 ;;; Evaluation support:
+
 (defsubst geiser-scsh--linearize-args (args)
   (mapconcat 'identity args " "))
 
-;; FIXME: Update the below to use the appropriate Scsh command
-;; processor commands. A first guess at each is in the comments.
 (defun geiser-scsh--geiser-procedure (proc &rest args)
   (case proc
-    ((eval compile) (format ",run %s %s%s"
-                            (or (car args) "#f")
-                            (geiser-scsh--linearize-args (cdr args))
-                            (if (cddr args) "" " ()")))
+    ((eval compile) (format ",run %s"
+			    (geiser-scsh--linearize-args (cdr args))))
     ((load-file compile-file) (format ",load %s" (car args)))
     ((no-values) "")
-    (t (format "ge:%s (%s)" proc (geiser-scsh--linearize-args args)))))
+    (t (format "(ge:%s %s)" proc (geiser-scsh--linearize-args args)))))
+
+;; (defvar geiser-scsh--module-re
+;;   "define-structure +\\(([^)]+)\\)")
 
 (defvar geiser-scsh--module-re
-  "define-structure +\\(([^)]+)\\)")
+  "scheme48-package: +\\([a-z\-]+\\)")
 
 (defvar geiser-scsh--library-re
   "define-interface +\\(([^)]+)\\)")
@@ -205,28 +183,27 @@ This function uses `geiser-scsh-init-file' if it exists."
   (geiser-scsh--module-cmd module ",open %s"))
 
 (defun geiser-scsh--enter-command (module)
-  (geiser-scsh--module-cmd module ",%s" module))
+  (geiser-scsh--module-cmd module ",in %s" module))
 
-(defun geiser-scsh--exit-command () ",exit")
+(defun geiser-scsh--exit-command () ",user")
 
+;; The definition of this function might need to be updated when you
+;; understand what it's for.
 (defun geiser-scsh--symbol-begin (module)
   (if module
       (max (save-excursion (beginning-of-line) (point))
            (save-excursion (skip-syntax-backward "^(>") (1- (point))))
     (save-excursion (skip-syntax-backward "^-()>") (point))))
 
-
 ;;; Error display
 
 (defun geiser-scsh--enter-debugger ()
   (let ((bt-cmd (format ",condition\n,debug\n")))
-    ;; (if geiser-scsh-debug-show-bt-p "bt" "fr"))))
     (compilation-forget-errors)
     (goto-char (point-max))
     (geiser-repl--prepare-send)
     (comint-send-string nil bt-cmd)
-    (when geiser-scsh-show-debug-help-p
-      (message "Debug REPL. Enter ,q to quit, ,h for help."))
+    (when geiser-scsh-show-debug-help-p nil)
     (when geiser-scsh-jump-on-debug-p
       (accept-process-output (get-buffer-process (current-buffer))
                              0.2 nil t)
@@ -237,9 +214,8 @@ This function uses `geiser-scsh-init-file' if it exists."
   (when (stringp msg)
     (save-excursion (insert msg))))
 
-
-;;; Trying to ascertain whether a buffer is Scsh Scheme:
-
+;;; Trying to ascertain whether a buffer is Scsh Scheme -- this regex
+;;; is likely to be really, really wrong.
 (defvar geiser-scsh--guess-re
   (format "\\(%s\\|#! *.+\\(/\\| \\)scsh\\( *\\\\\\)?\\)"
           geiser-scsh--module-re))
@@ -247,10 +223,65 @@ This function uses `geiser-scsh-init-file' if it exists."
 (defun geiser-scsh--guess ()
   (save-excursion
     (goto-char (point-min))
-    (re-search-forward geiser-scsh--guess-re nil t)))
+    (re-search-forward 
+     ;; geiser-scsh--guess-re
+     geiser-scsh--module-re
+     nil t)))
 
-
 ;;; Keywords and syntax
+
+(setq geiser-scsh-extra-keywords '("dynamic-wind"
+				   "destructure"
+				   "enum-case"
+				   "environment-define!"
+				   "environment-set!"
+				   "guard"
+				   "iterate"
+				   "make-usual-resumer"
+				   "mvlet"
+				   "mvlet*"
+				   "search-tree-modify!"
+				   "usual-resumer"
+				   "with-exception-handler"
+				   "with-handler"
+				   "with-interaction-environment"
+				   "with-nondeterminism"
+				   "call-with-current-input-port"
+				   "call-with-current-noise-port"
+				   "call-with-current-output-port"
+				   "call-with-string-output-port"
+				   "limit-output"
+				   "recurring-write"
+				   "silently"
+				   "with-current-ports"
+				   "define-interface"
+				   "define-structure"
+				   "structure"
+				   "structures"
+				   "atomically"
+				   "atomically!"
+				   "call-ensuring-atomicity"
+				   "call-ensuring-atomicity!"
+				   "ensure-atomicity"
+				   "ensure-atomicity!"
+				   "interrupt-thread"
+				   "let-fluid"
+				   "let-fluids"
+				   "spawn-on-scheduler"
+				   "with-new-proposal"
+				   "with-current-input-port"
+				   "with-current-output-port"
+				   "awk"
+				   "close-after"
+				   "if-match"
+				   "with-cwd"
+				   "with-cwd*"
+				   "let-optionals"
+				   "let-optionals*"
+				   "and-let*"
+				   "receive"
+				   "let-values"
+				   "let*-values"))
 
 (defun geiser-scsh--keywords ()
   (when geiser-scsh-extra-keywords
@@ -266,10 +297,78 @@ This function uses `geiser-scsh-init-file' if it exists."
  (with-fluid* 1)
  (with-fluids 1)
  (with-fluids* 1)
- (with-method 1))
+ (with-method 1)
+ (dynamic-wind 0)
 
+ ;; Scheme48
+ (destructure 1)
+ (enum-case 2)
+ (environment-define! 2 no-font-lock)
+ (environment-set! 2 no-font-lock)
+ (guard 1)
+ (iterate 3)
+ (make-usual-resumer 2 no-font-lock)
+ (mvlet 1)
+ (mvlet* 1)
+ (search-tree-modify! 2 no-font-lock)
+ (usual-resumer 0 no-font-lock)
+ (with-exception-handler 1)
+ (with-handler 1)
+ (with-interaction-environment 1)
+ (with-nondeterminism 0)
 
-
+ ;; I/O-related
+ (call-with-current-input-port 1)
+ (call-with-current-noise-port 1)
+ (call-with-current-output-port 1)
+ (call-with-string-output-port 0)
+ (limit-output 2 no-font-lock)
+ (recurring-write 2 no-font-lock)
+ (silently 0)
+ (with-current-ports 3)
+
+ ;; Configuration language
+ (define-interface 1)
+ (define-structure 2)
+ (structure 1)
+ (structures 1)
+
+ ;; Concurrency-related
+ (atomically 0)
+ (atomically! 0)
+ (call-ensuring-atomicity 0)
+ (call-ensuring-atomicity! 0)
+ (ensure-atomicity 0)
+ (ensure-atomicity! 0)
+ (interrupt-thread 1 no-font-lock)
+ (let-fluid 2)
+ (let-fluids defun)
+ (spawn-on-scheduler 1 no-font-lock)
+ (with-new-proposal 1)
+
+ ;; scsh
+ (with-current-input-port 2)
+ (with-current-output-port 2)
+ (awk 3)
+ (close-after 2 no-font-lock)
+ (if-match 2)
+ (with-cwd 1)
+ (with-cwd* 1)
+
+ ;; Others
+ (let-optionals scheme-let-indent)
+ (let-optionals* scheme-let-indent)
+
+ ;; SRFI-2
+ (and-let* 1)
+
+ ;; SRFI-8
+ (receive 2)
+
+ ;; SRFI-11
+ (let-values 1)
+ (let*-values 1))
+
 ;;; Compilation shell regexps
 
 (defvar geiser-scsh--path-rx "^In \\([^:\n ]+\\):\n")
@@ -291,7 +390,6 @@ This function uses `geiser-scsh-init-file' if it exists."
   (let ((f (geiser-scsh--resolve-file (match-string-no-properties 1))))
     (and (stringp f) (list f))))
 
-
 ;;; REPL startup
 
 (defun geiser-scsh-update-warning-level ()
@@ -302,27 +400,21 @@ The new level is set using the value of `geiser-scsh-warning-level'."
                       (geiser evaluation))))
     (geiser-eval--send/result code)))
 
-(defun connect-to-scsh ()
-  "Start a Scsh REPL connected to a remote process.
-
-Start the external Scsh process with the flag --listen to make
-it spawn a server thread."
-  (interactive)
-  (geiser-connect 'scsh))
+;; Note that the GEISER-SCHEME-DIR variable *must* end with a trailing
+;; slash in order for Scsh to search the directory recursively.  See
+;; the manual for details.
+(defvar geiser-scheme-dir (expand-file-name "~/Code/geiser-scsh/scheme/"))
 
 (defun geiser-scsh--set-load-path ()
-  (let* ((path (expand-file-name "scsh/" geiser-scheme-dir))
-         (witness "geiser/emacs.scm")
-         ;; (code `(begin (if (not (%search-load-path ,witness))
-         ;;                    (set! %load-path (cons ,path %load-path)))
-         ;;                'done))
-	 (code `(begin (if (not (member ,witness (lib-dirs)))
+  (let* ((path geiser-scheme-dir)
+	 (witness "emacs.scm")
+	 (code `(begin (if (not (find-library-file ,witness (lib-dirs) "geiser/"))
 			   (lib-dirs-append! ,path))
-		       'done))
-	 )
+		       'done)))
     (geiser-eval--send/wait code)))
 
 (defun geiser-scsh--startup (remote)
+  ;; This local variable is probably unnecessary for Scsh.
   (set (make-local-variable 'compilation-error-regexp-alist)
        `((,geiser-scsh--path-rx geiser-scsh--resolve-file-x)
          ("^  +\\([0-9]+\\):\\([0-9]+\\)" nil 1 2)))
@@ -331,15 +423,13 @@ it spawn a server thread."
                           `((,geiser-scsh--path-rx 1
 						   compilation-error-face)))
   (let* ((geiser-log-verbose-p t)
-         (path (expand-file-name "scsh/" geiser-scheme-dir))
-	 (load-cmd (format ",config ,load %s" path)))
+         (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
+	 (load-geiser-cmd (format ",translate =geiser-scsh-dir/ %s" path))
+	 (load-cmd ",exec ,load =geiser-scsh-dir/load.scm"))
     (when remote (geiser-scsh--set-load-path))
-    ;; (geiser-eval--send/wait ",open geiser-emacs\n")
-    (geiser-eval--send/wait load-cmd 5)
-    (geiser-eval--send/wait ",open geiser-emacs\n")
-    (geiser-scsh-update-warning-level)))
+    (geiser-eval--send/wait load-geiser-cmd)
+    (geiser-eval--send/wait load-cmd 5)))
 
-
 ;;; Manual lookup
 
 (defun geiser-scsh--info-spec (&optional nodes)
@@ -352,8 +442,7 @@ it spawn a server thread."
         (mapc (lambda (idx)
                 (add-to-list 'res
                              (list (format "(%s)%s" node idx) nil nrx drx)))
-              '("Variable Index" "Procedure Index" "R5RS Index"))))))
-
+              '("Index"))))))
 
 (info-lookup-add-help :topic 'symbol :mode 'geiser-scsh-mode
                       :ignore-case nil
@@ -368,19 +457,23 @@ it spawn a server thread."
     (switch-to-buffer-other-window "*info*"))
   (search-forward (format "%s" id) nil t))
 
+;; This function (from geiser-connection.el) needs to be redefined in
+;; order for Geiser's Scsh connection to work at all -- this is
+;; because the original version of this function was inserting
+;; spurious newlines into the regular expression that the `tq' package
+;; uses to determine where process output ends.  This caused the regex
+;; not to match, so that `tq' didn't know the process output was
+;; ready.
+(defun geiser-con--connection-eot-re (prompt debug)
+  (geiser-con--combined-prompt (format "%s" prompt)
+                               (and debug (format "%s" debug))))
 
-
+;; This needed to be set because its default value, NIL, was being
+;; FUNCALLed, which was making Emacs very unhappy.  I'm sure there is
+;; a better way to do this.
+(setq geiser-eval--get-module-function #'geiser-scsh--get-module)
+
 ;;; Implementation definition:
-
-;; This should load the geiser-specific Scheme code, such as
-;; `completions' and friends. Not ready yet though.
-
-;; More study needed.
-
-;; Doesn't seem necessary.
-
-;; This should work fine after the Info manual is ready. Don't forget
-;; to search the Scheme 48 manual and R5RS as well!
 
 (define-geiser-implementation scsh
   (arglist geiser-scsh--parameters)
@@ -388,7 +481,6 @@ it spawn a server thread."
   (enter-debugger geiser-scsh--enter-debugger)
 
   (external-help scsh--manual-look-up)
-;;
   (binary geiser-scsh--binary)
   (prompt-regexp geiser-scsh--prompt-regexp)
   (debugger-prompt-regexp geiser-scsh--debugger-prompt-regexp)
@@ -405,5 +497,4 @@ it spawn a server thread."
 
 (geiser-impl--add-to-alist 'regexp "\\.scm$" 'scsh t)
 
-
 (provide 'geiser-scsh)
