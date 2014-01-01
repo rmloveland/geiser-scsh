@@ -138,21 +138,21 @@ This function uses `geiser-scsh-init-file' if it exists."
   (mapconcat 'identity args " "))
 
 (defun geiser-scsh--geiser-procedure (proc &rest args)
+  (let ((linearized-cdr-args (geiser-scsh--linearize-args (cdr args)))
+	(linearized-args (geiser-scsh--linearize-args args)))
   (case proc
-    ((eval compile) (format ",run %s"
-			    (geiser-scsh--linearize-args (cdr args))))
+    ((eval compile) 
+     (if (string-match "ge:completions" linearized-cdr-args)
+     			(format "(ge:eval '%s 'NIL)" linearized-cdr-args)
+     		      (format ",run %s" linearized-cdr-args)))
     ((load-file compile-file) (format ",load %s" (car args)))
     ((no-values) "")
-    (t (format "(ge:%s %s)" proc (geiser-scsh--linearize-args args)))))
-
-;; (defvar geiser-scsh--module-re
-;;   "define-structure +\\(([^)]+)\\)")
+    (t (format "(ge:%s %s)" proc linearized-args)))))
 
 (defvar geiser-scsh--module-re
   "scheme48-package: +\\([a-z\-]+\\)")
 
-(defvar geiser-scsh--library-re
-  "define-interface +\\(([^)]+)\\)")
+(defvar geiser-scsh--library-re geiser-scsh--module-re)
 
 (defun geiser-scsh--get-module (&optional module)
   (cond ((null module)
@@ -187,8 +187,8 @@ This function uses `geiser-scsh-init-file' if it exists."
 
 (defun geiser-scsh--exit-command () ",user")
 
-;; The definition of this function might need to be updated when you
-;; understand what it's for.
+;; Note to self: the definition of this function may need to be
+;; updated once you understand its purpose.
 (defun geiser-scsh--symbol-begin (module)
   (if module
       (max (save-excursion (beginning-of-line) (point))
@@ -228,7 +228,8 @@ This function uses `geiser-scsh-init-file' if it exists."
      geiser-scsh--module-re
      nil t)))
 
-;;; Keywords and syntax
+;;; Additional keywords and syntax -- this should probably be left to
+;;; the user during customization, but right now I'm the only user. :-}
 
 (setq geiser-scsh-extra-keywords '("dynamic-wind"
 				   "destructure"
@@ -400,10 +401,10 @@ The new level is set using the value of `geiser-scsh-warning-level'."
                       (geiser evaluation))))
     (geiser-eval--send/result code)))
 
-;; Note that the GEISER-SCHEME-DIR variable *must* end with a trailing
-;; slash in order for Scsh to search the directory recursively.  See
-;; the manual for details.
-(defvar geiser-scheme-dir (expand-file-name "~/Code/geiser-scsh/scheme/"))
+;; The `geiser-scheme-dir' variable *must* end with a trailing slash
+;; in order for Scsh to search the directory recursively.  See the
+;; Scsh manual's entry on the FIND-LIBRARY-FILE procedure for details.
+(setq geiser-scheme-dir (expand-file-name "~/Code/geiser-scsh/scheme/"))
 
 (defun geiser-scsh--set-load-path ()
   (let* ((path geiser-scheme-dir)
@@ -457,12 +458,12 @@ The new level is set using the value of `geiser-scsh-warning-level'."
     (switch-to-buffer-other-window "*info*"))
   (search-forward (format "%s" id) nil t))
 
-;; This function (from geiser-connection.el) needs to be redefined in
-;; order for Geiser's Scsh connection to work at all -- this is
-;; because the original version of this function was inserting
+;; This function (snarfed from geiser-connection.el) needed to be
+;; redefined in order for Geiser's Scsh connection to work at all --
+;; this is because the original version of this function was inserting
 ;; spurious newlines into the regular expression that the `tq' package
 ;; uses to determine where process output ends.  This caused the regex
-;; not to match, so that `tq' didn't know the process output was
+;; not to match, so that `tq' didn't know the process's output was
 ;; ready.
 (defun geiser-con--connection-eot-re (prompt debug)
   (geiser-con--combined-prompt (format "%s" prompt)
@@ -479,7 +480,6 @@ The new level is set using the value of `geiser-scsh-warning-level'."
   (arglist geiser-scsh--parameters)
   (repl-startup geiser-scsh--startup)
   (enter-debugger geiser-scsh--enter-debugger)
-
   (external-help scsh--manual-look-up)
   (binary geiser-scsh--binary)
   (prompt-regexp geiser-scsh--prompt-regexp)

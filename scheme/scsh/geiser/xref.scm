@@ -10,22 +10,22 @@
 
 ;; SUCCESS: $10 = (("file") ("line"))
 ;; FAIL: $11 = ()
-(define (symbol-location sym)
+(define (ge:symbol-location sym)
   ;; Sym -> List
-  (cond ((symbol-module sym) 
-	 => module-location)
-        (else (let ((obj (symbol->object sym)))
+  (cond ((ge:symbol-module sym) 
+	 => ge:module-location)
+        (else (let ((obj (ge:symbol->object sym)))
 		'()))))
 
-(define (generic-methods sym)
-  (let* ((gen (symbol->object sym))
+(define (ge:generic-methods sym)
+  (let* ((gen (ge:symbol->object sym))
          (methods '()))
     methods))
 
 (define (make-xref proc name module)
   (and proc
-       `(("location" . ,(or (program-location proc) (symbol-location name)))
-         ("signature" . ,(object-signature name proc))
+       `(("location" . ,(or (program-location proc) (ge:symbol-location name)))
+         ("signature" . ,(ge:object-signature name proc))
          ("module" . ,(or module '())))))
 
 (define (program-location p)
@@ -37,15 +37,15 @@
 (define (procedure-xref proc . mod-name)
   (let* ((proc-name (or (procedure-name proc) '<anonymous>))
          (mod-name (if (null? mod-name)
-                       (symbol-module proc-name)
+                       (ge:symbol-module proc-name)
                        (car mod-name))))
     (make-xref proc proc-name mod-name)))
 
 (define (procedure-name sym)
   sym)
   
-(define (callers sym)
-  (let ((mod (symbol-module sym #t)))
+(define (ge:callers sym)
+  (let ((mod (ge:symbol-module sym #t)))
     (and mod
          (apply append (map (lambda (procs)
                               (map (lambda (proc)
@@ -56,15 +56,15 @@
 (define (procedure-callers var)
   '())
 
-(define (callees sym)
-  (let ((obj (symbol->object sym)))
+(define (ge:callees sym)
+  (let ((obj (ge:symbol->object sym)))
     (and obj
          (map procedure-xref (procedure-callees obj)))))
 
 (define (procedure-callees)
   '())
 
-(define (find-file path)
+(define (ge:find-file path)
   (let loop ((dirs (lib-dirs)))
     (if (null? dirs)
 	#f

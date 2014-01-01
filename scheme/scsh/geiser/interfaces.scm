@@ -1,28 +1,28 @@
 (define-interface geiser-modules-interface
-  (export module-name?
-	  symbol-module
-	  module-location
-	  find-module
-	  module-path
-	  submodules
-	  resolve-module
-	  all-modules))
+  (export ge:module-name?
+	  ge:symbol-module
+	  ge:module-location
+	  ge:find-module
+	  ge:module-path
+	  ge:submodules
+	  ge:resolve-module
+	  ge:all-modules))
 
 (define-interface geiser-utils-interface
-  (export make-location
-	  symbol->object
-	  pair->list
-	  sort-symbols!
-	  make-symbol-sort
-	  gensym?
-	  bound?))
+  (export ge:make-location
+	  ge:symbol->object
+	  ge:pair->list
+	  ge:sort-symbols!
+	  ge:make-symbol-sort
+	  ge:gensym?
+	  ge:bound?))
 
 (define-interface geiser-xref-interface
-  (export symbol-location
-	  generic-methods
-	  callers
-	  callees
-	  find-file))
+  (export ge:symbol-location
+	  ge:generic-methods
+	  ge:callers
+	  ge:callees
+	  ge:find-file))
 
 (define-interface geiser-evaluation-interface
   (export ge:eval
@@ -36,8 +36,8 @@
 
 (define-interface geiser-doc-interface
   (export ge:autodoc
-	  module-exports
-	  object-signature
+	  ge:module-exports
+	  ge:object-signature
 	  ge:symbol-documentation))
 
 (define-interface geiser-completion-interface

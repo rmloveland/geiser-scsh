@@ -8,16 +8,17 @@
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-(define (module-name? module-name)
+(define (ge:module-name? module-name)
   (and (symbol? module-name)
        (list module-name)))
 
 ;; Given a SYMBOL, and an optional argument that determines whether to
 ;; search all modules for the binding of SYMBOL, search for the
-;; binding of SYMBOL in the current module/all modules.
-(define (symbol-module sym . all)
+;; binding of SYMBOL in the current module/all modules.  Note: you can
+;; probably learn from what SLIME48 does here.
+(define (ge:symbol-module sym . all)
   ;; Symbol . ? -> List
-  (let ((val (symbol->object sym)))
+  (let ((val (ge:symbol->object sym)))
     (if val
 	(list (vector-ref val 1))
 	'())))
@@ -25,32 +26,32 @@
 ;; SUCCESS: $10 = (("file") ("line"))
 ;; FAIL: $11 = ()
 ;; (make-location (module-path name) #f)
-(define (module-location name)
+(define (ge:module-location name)
   '())
 
-;; FIXME: Need to find an analog to Guile's `resolve-module'
-;; procedure, which returns an opaque directory ``thing'',
-;; or #f, e.g.:
+;; Note: we need to find an analog to Guile's `resolve-module'
+;; procedure, which returns an opaque directory ``thing'', or #f,
+;; e.g.: 
+
 ;; $5 = #<directory (ice-9 session) 101237cf0> (resolve-module mod-name #f ensure #f)))
-(define (find-module mod-name)
-  (and (module-name? mod-name)
+(define (ge:find-module mod-name)
+  (and (ge:module-name? mod-name)
        #f))
 
-(define (module-path module-name)
+(define (ge:module-path module-name)
   ;; List -> String or #f
   #f)
 
-(define (submodules mod)
+(define (ge:submodules mod)
   ;; List -> List
   '())
 
-(define (root-modules)
-  (submodules (resolve-module '() #f 0 #f)))
+(define (ge:root-modules)
+  (ge:submodules (ge:resolve-module '() #f 0 #f)))
 
-(define (resolve-module name autoload version ensure)
+(define (ge:resolve-module name autoload version ensure)
   #f)
 
-
-(define (all-modules)
+(define (ge:all-modules)
   ;; -> List
   (cons "(scsh)" '()))

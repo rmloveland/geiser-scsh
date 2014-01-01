@@ -45,6 +45,11 @@
 
 (define-structure geiser-completion geiser-completion-interface
   (open scheme-with-scsh
+	packages
+	packages-internal
+	handle				; ignore-errors
+	util 				; fold
+	sort
 	geiser-utils
 	geiser-modules)
   (files completion))
@@ -60,11 +65,8 @@
   (open scheme-with-scsh
 	geiser-evaluation
 	command-processor
-	;; TODO: Figure out how to export symbols with prefixes using
-	;; the S48 module system.
-	geiser-modules            ; renamer (symbol-prefix-proc 'ge: )
-	geiser-completion	  ; renamer (symbol-prefix-proc 'ge: )
-	geiser-xref		  ; renamer (symbol-prefix-proc 'ge: )
-	geiser-doc		  ; renamer (symbol-prefix-proc 'ge: )
-	)
+	geiser-modules
+	geiser-completion
+	geiser-xref
+	geiser-doc)
   (files emacs))

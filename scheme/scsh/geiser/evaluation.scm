@@ -23,27 +23,31 @@
 (ge:set-warnings 'none)
 
 (define (write-result result output)
-  (write (list (cons 'result result) (cons 'output output)))
+  (write (list (cons 'result (list result)) (cons 'output output)))
   (newline))
 
-(define (call-with-result thunk)
-  (let* ((result '())
-	 (output
-	  (with-error-output-port (current-output-port)
-				  (lambda () (set! result (cons (thunk) result))))))
-    (write-result result output)))
+;; We need EVAL-WITH-OUTPUT because of the weird way Scsh (Scheme 48,
+;; really) generates output that can break its own reader (e.g.,
+;; ``#{Unspecific}'')
+(define (eval-with-output form module)
+  ;; Object Object -> String
+  (let ((the-port (make-string-output-port))
+	(the-string #f))
+    (begin (write (eval form module) the-port)
+	   (set! the-string (string-output-port-output the-port))
+	   the-string)))
 
 ;; Output of this procedure should be in the following format:
 ;; '((result "31") (output . ""))
 (define (ge:eval form module-name)
-  (let* ((module (or 
-		  (find-module module-name)
+  (let* ((module (or
+		  (ge:find-module module-name)
 		  (interaction-environment))))
     (receive (first second)
 	(values
-	 (eval form module)
-	 (lambda vs (map object->string vs)))
-      (write-result first second))))
+	 (eval-with-output form module)
+	 '())
+    (write-result first second))))
 
 (define ge:load-file load)
 

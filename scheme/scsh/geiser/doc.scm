@@ -9,7 +9,7 @@
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
 (define (signature id args-list)
-  (let ((value (symbol->object id)))
+  (let ((value (ge:symbol->object id)))
     (if value
 	(let ((args (vector-ref value 0))
 	      (proc (vector-ref value 1)))
@@ -31,15 +31,15 @@
         ((syntax? obj) default-macro-args)
         (else 'variable)))
 
-(define (object-signature name obj)	
+(define (ge:object-signature name obj)	
   (let ((args (obj-args obj)))
     (and args (signature name args))))
 
 (define (%autodoc id)			
-  (let ((args (obj-args (symbol->object id))))
+  (let ((args (obj-args (ge:symbol->object id))))
     (and args
          `(,@(signature id args)
-           ("module" . ,(symbol-module id))))))
+           ("module" . ,(ge:symbol-module id))))))
 
 (define (ge:autodoc ids)
   (if (not (list? ids))
@@ -59,7 +59,6 @@
 
 ;; We keep a hash table whose keys are procedure names and whose
 ;; values are alists with their own keys and values.
-
 (define *procedure-properties-table* (make-table)) 
 
 (define (set-procedure-property! obj key args) 
@@ -75,7 +74,7 @@
 	#f)))
 
 (define (value-str obj)			
-  (p obj))
+  (format #f "~A" obj))
 
 (define (assq-ref alist key)		
   (let ((retval (assq key alist)))
@@ -109,6 +108,7 @@
            `((required . ,(car formals)) (rest . ,(cdr formals))))
           (else #f))))
 
+;; Defined in SRFI-1; this can probably be removed.
 (define (iota n)
   (let loop ((count (- n 1))
 	     (result '()))
@@ -142,7 +142,7 @@
     (and args (signature sym args))))
 
 (define (ge:symbol-documentation sym)	
-  (let ((obj (symbol->object sym)))
+  (let ((obj (ge:symbol->object sym)))
     (if obj
         `(("signature" . ,(or (obj-signature sym obj) sym))
           ("docstring" . ,(docstring sym obj))))))
@@ -158,7 +158,7 @@
       (let* ((type (cond ((syntax? obj) "A macro")
                          ((procedure? obj) "A procedure")
                          (else "An object")))
-             (modname (symbol-module sym))
+             (modname (ge:symbol-module sym))
              (doc (object-documentation obj)))
         (display type port)
         (if modname
@@ -174,7 +174,7 @@
                                (display "   " port)
                                (display (value-str obj) port)))))))
 
-(define (module-exports mod-name)
+(define (ge:module-exports mod-name)
   ;; List -> List
   (list '("modules")
 	'("procs")
