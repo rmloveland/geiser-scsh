@@ -28,7 +28,9 @@
 
 ;; We need EVAL-WITH-OUTPUT because of the weird way Scsh (Scheme 48,
 ;; really) generates output that can break its own reader (e.g.,
-;; ``#{Unspecific}'')
+;; ``#{Unspecific}'').  Note: We sorely need to write our own version
+;; of Guile's WITH-OUTPUT-TO-STRING (See EXPAND* below for the reason
+;; why).
 (define (eval-with-output form module)
   ;; Object Object -> String
   (let ((the-port (make-string-output-port))
@@ -52,8 +54,13 @@
 (define ge:load-file load)
 
 (define (expand* form . all)
-  (let ((env (package->environment (environment-for-commands))))
-    (schemify (expand-form (or form (car form)) env) env)))
+  (let* ((env (package->environment (environment-for-commands)))
+	 (output (schemify (expand-form (or form (car form)) env) env))
+	 (the-port (make-string-output-port))
+	 (the-string #f))
+    (begin (write output the-port)
+	   (set! the-string (string-output-port-output the-port))
+	   the-string)))
 
 (define ge:macroexpand expand*)
 
