@@ -14,6 +14,8 @@
   (open scheme-with-scsh
 	srfi-1
 	re-old-funs
+	disclosers
+	closures
 	geiser-utils)
   (files modules))
 

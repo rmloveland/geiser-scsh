@@ -23,6 +23,17 @@
 	(list (vector-ref val 1))
 	'())))
 
+;; Example output from this procedure:
+;; > (describe-module-hierarchy car)
+;; '(car scheme-level-0)
+;; Note that PROC-NAME must be defined or else this procedure blows
+;; up.
+(define (describe-module-hierarchy proc-name)
+  (if (closure? proc-name)
+      (let ((dd (template-debug-data (closure-template proc-name))))
+	(debug-data-names dd))
+      '()))
+
 ;; SUCCESS: $10 = (("file") ("line"))
 ;; FAIL: $11 = ()
 ;; (make-location (module-path name) #f)
