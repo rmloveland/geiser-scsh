@@ -447,7 +447,7 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 
 (info-lookup-add-help :topic 'symbol :mode 'geiser-scsh-mode
                       :ignore-case nil
-                      :regexp "[^()`',\" 	\n]+"
+                      :regexp "[^()`',\"	\n]+"
                       :doc-spec (geiser-scsh--info-spec))
 
 (defun scsh--manual-look-up (id mod)
