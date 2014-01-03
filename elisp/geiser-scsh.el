@@ -185,7 +185,10 @@ This function uses `geiser-scsh-init-file' if it exists."
   (geiser-scsh--module-cmd module ",open %s"))
 
 (defun geiser-scsh--enter-command (module)
-  (geiser-scsh--module-cmd module ",in %s" module))
+  (let ((cmd (if (string-equal module "user")
+		 ",user"
+	       ",in %s")))
+    (geiser-scsh--module-cmd module cmd module)))
 
 (defun geiser-scsh--exit-command () ",exit")
 
