@@ -187,7 +187,7 @@ This function uses `geiser-scsh-init-file' if it exists."
 (defun geiser-scsh--enter-command (module)
   (geiser-scsh--module-cmd module ",in %s" module))
 
-(defun geiser-scsh--exit-command () ",user")
+(defun geiser-scsh--exit-command () ",exit")
 
 ;; Note to self: the definition of this function may need to be
 ;; updated once you understand its purpose.
