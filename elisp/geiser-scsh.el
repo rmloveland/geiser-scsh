@@ -146,7 +146,7 @@ This function uses `geiser-scsh-init-file' if it exists."
 	    (format "(ge:eval '%s 'NIL)" linearized-cdr-args))
 	   ((string-match "ge:macroexpand" linearized-cdr-args)
 	    (format "(ge:eval '%s 'NIL)" linearized-cdr-args))
-	   (t (format ",run %s" linearized-cdr-args))))
+	   (t (format "(ge:eval (quote %s) 'NIL)" linearized-cdr-args))))
     ((load-file compile-file) (format ",load %s" (car args)))
     ((no-values) "")
     (t (format "(ge:%s %s)" proc linearized-args)))))
