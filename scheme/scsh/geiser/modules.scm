@@ -16,19 +16,15 @@
 ;; search all modules for the binding of SYMBOL, search for the
 ;; binding of SYMBOL in the current module/all modules.  Note: you can
 ;; probably learn from what SLIME48 does here.
-(define (ge:symbol-module sym . all)
-  ;; Symbol . ? -> List
-  (let ((val (ge:symbol->object sym)))
-    (if val
-	(list (vector-ref val 1))
-	'())))
 
-;; Example output from this procedure:
-;; > (describe-module-hierarchy car)
-;; '(car scheme-level-0)
-;; Note that PROC-NAME must be defined or else this procedure blows
-;; up.
-(define (describe-module-hierarchy proc-name)
+(define-syntax ge:symbol-module
+  (syntax-rules ()
+    ((ge:symbol-module proc-name . all)
+     (if (ge:bound? (quote proc-name))
+	 (list (second (%describe-module-hierarchy proc-name)))
+	 '()))))
+
+(define (%describe-module-hierarchy proc-name)
   (if (closure? proc-name)
       (let ((dd (template-debug-data (closure-template proc-name))))
 	(debug-data-names dd))
