@@ -406,17 +406,13 @@ The new level is set using the value of `geiser-scsh-warning-level'."
                       (geiser evaluation))))
     (geiser-eval--send/result code)))
 
-;; The `geiser-scheme-dir' variable *must* end with a trailing slash
-;; in order for Scsh to search the directory recursively.  See the
-;; Scsh manual's entry on the FIND-LIBRARY-FILE procedure for details.
-(setq geiser-scheme-dir (expand-file-name "~/Code/geiser-scsh/scheme/"))
-
 (defun geiser-scsh--set-load-path ()
-  (let* ((path geiser-scheme-dir)
-	 (witness "emacs.scm")
-	 (code `(begin (if (not (find-library-file ,witness (lib-dirs) "geiser/"))
-			   (lib-dirs-append! ,path))
-		       'done)))
+  (let* ((code (if geiser-scsh-load-path
+		   `(begin (for-each (lambda (path)
+				       (lib-dirs-append! path))
+				     (quote ,geiser-scsh-load-path))
+			   'done)
+		 `(quote ()))))
     (geiser-eval--send/wait code)))
 
 (defun geiser-scsh--startup (remote)
@@ -432,7 +428,7 @@ The new level is set using the value of `geiser-scsh-warning-level'."
          (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
 	 (load-geiser-cmd (format ",translate =geiser-scsh-dir/ %s" path))
 	 (load-cmd ",exec ,load =geiser-scsh-dir/load.scm"))
-    (when remote (geiser-scsh--set-load-path))
+    (geiser-scsh--set-load-path)
     (geiser-eval--send/wait load-geiser-cmd)
     (geiser-eval--send/wait load-cmd 5)))
 
