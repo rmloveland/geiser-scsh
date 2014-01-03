@@ -1,6 +1,6 @@
 (define-interface geiser-modules-interface
   (export ge:module-name?
-	  ge:symbol-module
+	  (ge:symbol-module :syntax)
 	  ge:module-location
 	  ge:find-module
 	  ge:module-path
