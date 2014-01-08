@@ -3,24 +3,46 @@
 ;; Copyright (C) 2009, 2012 Jose Antonio Ortega Ruiz
 ;; Copyright (C) 2013 Rich Loveland
 
+;; This file repurposes some Public Domain code from Taylor Campbell's
+;; SLIME48, which you can read more about at
+;; <http://mumble.net/~campbell/slime48.html>.
+
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the Modified BSD License. You should
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
-
-;; This file repurposes some code from Taylor Campbell's SLIME48,
-;; which you can read more about at
-;; <http://mumble.net/~campbell/slime48.html>.
 
 (define (ge:completions prefix)
   (let ((completions (car (simple-completions prefix 'NIL))))
     (sort-list completions string<?)))
 
 (define (ge:module-completions prefix)
-  '())
+  (compute-module-completions prefix (gather-all-packages) string-prefix-ci?))
 
 (define (read-from-string string)
       (read (make-string-input-port string)))
+
+(define (gather-all-packages)
+  ;; -> List
+  (let ((all-packages '()))
+    (table-walk
+     (lambda (k v) (set! all-packages (cons v all-packages)))
+     package-name-table)
+    all-packages))
+
+(define (compute-module-completions prefix-string packages completion?)
+  (let ((completions '())
+        (completion? (make-completion-predicate prefix-string
+                                                completion?)))
+    (define (test symbol)
+      (if (symbol? symbol)     ; protect against generated names
+          (let ((string (symbol->string symbol)))
+            (if (completion? string)
+                (set! completions (cons string completions))))))
+    (for-each (lambda (element)
+		(test element))
+	      packages)
+    completions))
 
 (define (simple-completions prefix-string package-spec)
   (let ((package-id (if (string? package-spec)
@@ -31,7 +53,7 @@
            => (lambda (package)
                 (let ((completions
                        (compute-completions prefix-string package
-                                            string-prefix?)))
+                                            string-prefix-ci?)))
                   (list completions
                         (longest-common-prefix completions)))))
           (else
@@ -73,16 +95,6 @@
              #t))
           (else
            (format #t "Invalid prefix string: ~S" prefix-string)))))
-
-(define (string-prefix? prefix string)
-  (let ((prefix-len (string-length prefix)))
-    (and (<= prefix-len (string-length string))
-         (let loop ((i 0))
-           (cond ((= i prefix-len) #t)
-                 ((char=? (string-ref prefix i)
-                          (string-ref string i))
-                  (loop (+ i 1)))
-                 (else #f))))))
 
 (define (longest-common-prefix strings)
   (if (null? strings)
