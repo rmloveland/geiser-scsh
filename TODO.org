@@ -1,25 +1,61 @@
-#+title: Geiser scsh TODO
+#+title: Geiser Scsh TODO
 #+author: Rich Loveland
 #+email: r@rmloveland.com
 
-* TODO Port remaining Scheme files
+* Implementation status of Geiser REPL mode commands
 
-  Note that we use the term ``port'' lightly; we mean simply that the
-  most basic, nonfunctional versions of all of the interfaces are
-  exported by each module.
+  key           binding                                          Works?
+  ---           -------                                          ------
+  
+  TAB		geiser-repl-tab-dwim                             No
+  C-.		geiser-completion--complete-module               No
+  <backtab>	geiser-repl--previous-error                      No
+  
+  C-M-i		completion-at-point                              Yes
+  M-.		geiser-edit-symbol-at-point                      No
+  M-`		geiser-completion--complete-module               No
+  
+  C-c C-d	Prefix Command
+  C-c TAB	geiser-repl-import-module                        Yes
+  C-c RET	switch-to-geiser-module                          Yes
+  C-c C-q	geiser-repl-exit                                 Yes
+  C-c C-r	geiser-add-to-load-path                          Yes
+  C-c C-z	switch-to-geiser                                 Yes
+  C-c ESC	Prefix Command
+  
+  C-c C-d C-a	geiser-autodoc-mode                              No
+  C-c C-d C-d	geiser-doc-symbol-at-point                       No
+  C-c C-d TAB	geiser-doc-look-up-manual                        No
+  C-c C-d RET	geiser-repl--doc-module                          No
+  C-c C-d a	geiser-autodoc-mode                              No
+  C-c C-d d	geiser-doc-symbol-at-point                       No
+  C-c C-d i	geiser-doc-look-up-manual                        No
+  C-c C-d m	geiser-repl--doc-module                          No
+  
+  C-c M-o       geiser-repl-clear-buffer                         Yes
 
-  - [ ] emacs.scm
-  - [ ] evaluation.scm
-  - [X] doc.scm
-  - [X] xref.scm (depends on doc.scm)
+* Random TODO items
 
-* TODO Add scsh to Geiser's list of active implementations programmatically
+** DONE Add scsh to Geiser's list of active implementations programmatically?
 
-  Figure out how to do this the right way at Geiser load time, so the user doesn't have to
-  do M-x customize.
+   Update, Tue Jan  7 22:47:15 2014:  No, let's leave it to the user for now.
 
-* DONE Port completion.scm
+   Figure out how to do this the right way at Geiser load time, so the user doesn't have to
+   do M-x customize.
 
-* DONE Port modules.scm
+** DONE Port remaining Scheme files
 
-* DONE Port utils.scm to scsh
+   Note that we use the term ``port'' lightly; we mean simply that the
+   most basic, nonfunctional versions of all of the interfaces are
+   exported by each module.
+
+   - [X] emacs.scm
+   - [X] evaluation.scm
+   - [X] doc.scm
+   - [X] xref.scm (depends on doc.scm)
+
+** DONE Port completion.scm
+
+** DONE Port modules.scm
+
+** DONE Port utils.scm to scsh
