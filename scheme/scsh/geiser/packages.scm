@@ -52,6 +52,8 @@
 	handle				; ignore-errors
 	util 				; fold
 	sort
+	tables
+	srfi-13				; string-prefix-ci?
 	geiser-utils
 	geiser-modules)
   (files completion))
