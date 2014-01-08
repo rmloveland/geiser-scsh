@@ -182,7 +182,8 @@ This function uses `geiser-scsh-init-file' if it exists."
       (and module (format fmt module)))))
 
 (defun geiser-scsh--import-command (module)
-  (geiser-scsh--module-cmd module ",open %s"))
+  (and (stringp module)
+       (geiser-scsh--module-cmd module ",open %s")))
 
 (defun geiser-scsh--enter-command (module)
   (let ((cmd (if (string-equal module "user")
@@ -425,7 +426,9 @@ The new level is set using the value of `geiser-scsh-warning-level'."
                           `((,geiser-scsh--path-rx 1
 						   compilation-error-face)))
   (let* ((geiser-log-verbose-p t)
-         (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
+	 ;; Note that you need to set the variable of
+	 ;; `geiser-scheme-dir' before running Scsh.
+	 (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
 	 (load-geiser-cmd (format ",translate =geiser-scsh-dir/ %s" path))
 	 (load-cmd ",exec ,load =geiser-scsh-dir/load.scm"))
     (geiser-scsh--set-load-path)
