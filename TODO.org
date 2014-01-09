@@ -70,7 +70,11 @@
   C-c C-e l	geiser-add-to-load-path                          Yes
   C-c C-e m	geiser-edit-module                               No
 
-* Random TODO items
+* Things to Do!
+
+** TODO Update this file's list of Geiser commands to use the one from Geiser's own README
+
+   Silly to make your own without checking first, oh well. :-P
 
 ** DONE Add scsh to Geiser's list of active implementations programmatically?
 
