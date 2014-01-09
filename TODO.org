@@ -2,9 +2,9 @@
 #+author: Rich Loveland
 #+email: r@rmloveland.com
 
-* Implementation status of Geiser REPL mode commands
+* Implementation status of Geiser commands
 
-  key           binding                                          Works?
+  key           binding                                          works?
   ---           -------                                          ------
   
   TAB		geiser-repl-tab-dwim                             No
@@ -14,15 +14,13 @@
   C-M-i		completion-at-point                              Yes
   M-.		geiser-edit-symbol-at-point                      No
   M-`		geiser-completion--complete-module               No
-  
-  C-c C-d	Prefix Command
+
   C-c TAB	geiser-repl-import-module                        Yes
   C-c RET	switch-to-geiser-module                          Yes
   C-c C-q	geiser-repl-exit                                 Yes
   C-c C-r	geiser-add-to-load-path                          Yes
   C-c C-z	switch-to-geiser                                 Yes
-  C-c ESC	Prefix Command
-  
+
   C-c C-d C-a	geiser-autodoc-mode                              No
   C-c C-d C-d	geiser-doc-symbol-at-point                       No
   C-c C-d TAB	geiser-doc-look-up-manual                        No
@@ -33,6 +31,44 @@
   C-c C-d m	geiser-repl--doc-module                          No
   
   C-c M-o       geiser-repl-clear-buffer                         Yes
+  C-x C-e       geiser-eval-last-sexp                            Yes
+
+  C-M-x		geiser-eval-definition                           Yes
+  M-,		geiser-pop-symbol-stack                          No
+
+  C-c C-a       geiser-mode-switch-to-repl-and-enter             No
+  C-c C-b	geiser-eval-buffer                               Yes
+  C-c C-k	geiser-compile-current-buffer                    No
+  C-c C-r	geiser-eval-region                               Yes
+  C-c C-s	geiser-set-scheme                                Yes
+  C-c C-z	geiser-mode-switch-to-repl                       Yes
+  C-c C-\	geiser-insert-lambda                             Yes
+  C-c <		geiser-xref-callers                              No
+  C-c >		geiser-xref-callees                              No
+  C-c \		geiser-insert-lambda                             Yes
+
+  C-c M-b	geiser-eval-buffer-and-go                        Yes
+  C-c M-e	geiser-eval-definition-and-go                    Yes
+  C-c M-r	geiser-eval-region-and-go                        Yes
+
+  C-c RET C-e	geiser-expand-last-sexp                          Yes
+  C-c RET C-r	geiser-expand-region                             Yes
+  C-c RET C-x	geiser-expand-definition                         Yes
+  C-c RET e	geiser-expand-last-sexp                          Yes
+  C-c RET r	geiser-expand-region                             Yes
+  C-c RET x	geiser-expand-definition                         Yes
+
+  C-c C-d RET	geiser-doc-module                                No
+  C-c C-d C-s	geiser-autodoc-show                              No
+  C-c C-d m	geiser-doc-module                                No
+  C-c C-d s	geiser-autodoc-show                              No
+
+  C-c C-e C-l	geiser-add-to-load-path                          Yes
+  C-c C-e RET	geiser-edit-module                               No
+  C-c C-e ESC	geiser-squarify                                  Yes
+  C-c C-e [	geiser-squarify                                  Yes
+  C-c C-e l	geiser-add-to-load-path                          Yes
+  C-c C-e m	geiser-edit-module                               No
 
 * Random TODO items
 
