@@ -72,6 +72,10 @@
 
 * Things to Do!
 
+** TODO Write some kind of `Get Started' guide detailing the settings you need
+
+   ... and in what order ...
+
 ** TODO Update this file's list of Geiser commands to use the one from Geiser's own README
 
    Silly to make your own without checking first, oh well. :-P
