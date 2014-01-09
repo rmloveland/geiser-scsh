@@ -1,24 +1,43 @@
+--------------------------------------------------------------------
                      Geiser support for Scsh
 --------------------------------------------------------------------
 
-This is an attempt to make Scsh one of the implementations supported
-by Geiser (http://geiser.nongnu.org).
+This is an attempt to make Scsh 0.6.7 one of the Scheme
+implementations supported by Geiser.  For more information about Scsh
+and Geiser, see http://www.scsh.net and http://geiser.nongnu.org,
+respectively.  (If you're using Scsh 0.7, see the note at the bottom
+of this page.)
 
-Right now hardly anything works. The port is still in progress. And by
-``port'', we mean the most basic possible versions of the interfaces
-are exported by each module. For example, in many cases when a
-procedure can return '() or #f, we do so (pending a better solution to
-be implemented later, of course).
+See the TODO.org file for a matrix of Geiser commands and their
+implementation statuses.  A healthy portion of Geiser's functionality
+is implemented, enough to hack Scsh's Geiser support from inside
+Geiser itself.  Which is good fun. :-}
 
-For the moment we're only targeting Scsh 0.6.7, the latest
-``official'' release from 2006 or so (available at
-http://www.scsh.net). Once it's up and running, we can think about
-adding support for the newer version being developed here:
-https://github.com/scheme/scsh. I really don't know what's involved,
-though.
+However, the work is still in progress.  In some modules, the most
+basic possible versions of the Geiser interfaces are exported by each
+module; in a number of cases when a procedure can return '() or #f, we
+do so (pending a better solution to be implemented later, of course).
 
 Help from any interested Scheme hackers is, of course, welcome.
 
-(Note that a complementary project is also underway to convert the
-Scsh manual to Texinfo here:
-https://github.com/rmloveland/scsh-manual-texinfo)
+Finally, the Scsh manual is available in Texinfo format here:
+https://github.com/rmloveland/scsh-manual-texinfo
+
+
+                      (A note on Scsh 0.7)
+--------------------------------------------------------------------
+
+Adding support for the newer version of Scsh (0.7) is also a goal of
+this project, assuming it hasn't been done already.  Interested Scheme
+hackers can check out Scsh 0.7 here: https://github.com/scheme/scsh.
+
+I suspect that Scsh 0.7 (and the underlying updated Scheme 48) would
+be able to expose even more elaborate (and cool!) introspective
+facilities to the Schemer doing the Geiser integration.
+
+Thanks to Taylor Campbell for writing SLIME48, from which most of the
+symbol and module completion code was adapted.  It's also just a great
+source of knowledge about how to write Scheme 48 programs.  For more
+info about SLIME48, see http://mumble.net/~campbell/slime48.html.
+
+And thanks to jao, for Geiser!
