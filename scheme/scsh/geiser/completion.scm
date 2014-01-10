@@ -82,9 +82,7 @@
   ;++ This is a kind of cheesy hack.  What we really want is for the
   ;++ reader to expose its symbol recognizer.  Fortunately, symbols are
   ;++ GC'd, so this is OK for now.
-  (let ((prefix-symbol
-         (ignore-errors (lambda ()
-                          (read-from-string prefix-string)))))
+  (let ((prefix-symbol (string->symbol prefix-string)))
     (cond ((symbol? prefix-symbol)
            (let ((prefix-string (symbol->string prefix-symbol)))
              (lambda (string)
@@ -94,7 +92,7 @@
              string                     ;ignore
              #t))
           (else
-           (format #t "Invalid prefix string: ~S" prefix-string)))))
+           (error "Invalid prefix string: ~S" prefix-string)))))
 
 (define (longest-common-prefix strings)
   (if (null? strings)
