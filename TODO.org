@@ -15,7 +15,7 @@
   M-.		geiser-edit-symbol-at-point                      No
   M-`		geiser-completion--complete-module               No
 
-  C-c TAB	geiser-repl-import-module                        Yes
+  C-c TAB	geiser-repl-import-module                        No
   C-c RET	switch-to-geiser-module                          Yes
   C-c C-q	geiser-repl-exit                                 Yes
   C-c C-r	geiser-add-to-load-path                          Yes
@@ -71,6 +71,8 @@
   C-c C-e m	geiser-edit-module                               No
 
 * Things to Do!
+
+** TODO Get `geiser-repl-import-module' working
 
 ** TODO Write some kind of `Get Started' guide detailing the settings you need
 
