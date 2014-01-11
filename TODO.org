@@ -72,6 +72,13 @@
 
 * Things to Do!
 
+** TODO Include Campbell's APROPOS.SCM?
+
+   It would be really nifty to have a command like
+   `geiser-scsh-apropos', bound to something like `C-c C-d (C-)p',
+   that ran APROPOS-ALL on the symbol at point and sent its output to
+   a separate buffer a la the macroexpansion things.
+
 ** TODO Get `geiser-repl-import-module' working
 
 ** TODO Write some kind of `Get Started' guide detailing the settings you need
