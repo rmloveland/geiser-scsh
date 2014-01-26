@@ -182,8 +182,7 @@ This function uses `geiser-scsh-init-file' if it exists."
       (and module (format fmt module)))))
 
 (defun geiser-scsh--import-command (module)
-  (and (stringp module)
-       (geiser-scsh--module-cmd module ",open %s")))
+  (geiser-scsh--module-cmd module ",open %s"))
 
 (defun geiser-scsh--enter-command (module)
   (let ((cmd (if (string-equal module "user")
