@@ -1,7 +1,8 @@
 ;; See geiser-scsh.el for the value of =geiser-scsh-dir.
 
 (config '(load "=geiser-scsh-dir/interfaces.scm"
-               "=geiser-scsh-dir/packages.scm"))
+               "=geiser-scsh-dir/packages.scm"
+	       "=geiser-scsh-dir/apropos.scm"))
 
 
 ;; Next, we load the geiser packages in the correct order.
@@ -12,6 +13,7 @@
 (load-package 'geiser-completion)
 (load-package 'geiser-xref)
 (load-package 'geiser-emacs)
+(load-package 'apropos)
 
 (user)
 
@@ -22,3 +24,4 @@
 (open 'geiser-completion)
 (open 'geiser-xref)
 (open 'geiser-emacs)
+(open 'apropos)
