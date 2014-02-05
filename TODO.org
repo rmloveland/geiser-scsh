@@ -70,24 +70,38 @@
   C-c C-e l	geiser-add-to-load-path                          Yes
   C-c C-e m	geiser-edit-module                               No
 
-* Things to Do!
+* Things still to do!
 
-** TODO Include Campbell's APROPOS.SCM?
+** TODO Get crossreferencing (xref) working
+
+   See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for
+   some details about how to accomplish this.
+
+* Things already done
+
+** DONE Include Campbell's APROPOS.SCM?
 
    It would be really nifty to have a command like
    `geiser-scsh-apropos', bound to something like `C-c C-d (C-)p',
    that ran APROPOS-ALL on the symbol at point and sent its output to
    a separate buffer a la the macroexpansion things.
 
-** TODO Get `geiser-repl-import-module' working
+   - Tue Feb 4 22:55:11 2014: I've cheated and just loaded apropos.scm
+     at startup, so it's there in the REPL.  Not the most elegant
+     solution, but it saves me having to load it in every session.
+     This should really be loaded as part of my personal scsh
+     environment, not here.
 
-** TODO Write some kind of `Get Started' guide detailing the settings you need
+** DONE Write some kind of `Get Started' guide detailing the settings you need
 
    ... and in what order ...
 
-** TODO Update this file's list of Geiser commands to use the one from Geiser's own README
+   - Tue Feb  4 22:58:48 2014: [[http://logicgrimoire.wordpress.com/2014/01/11/geiser-and-scsh-are-talking/][Published]].
 
-   Silly to make your own without checking first, oh well. :-P
+** DONE Get `geiser-repl-import-module' working
+
+   - Tue Feb 4 22:58:00 2014: This appears to be working now, might
+     have just had a wee misconfiguration somewhere.
 
 ** DONE Add scsh to Geiser's list of active implementations programmatically?
 
