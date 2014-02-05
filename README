@@ -1,39 +1,68 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    Geiser support for scsh 0.6.7
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                            * QuickStart *
 --------------------------------------------------------------------
-                     Geiser support for Scsh
+
+Here's how to get up and running.  These instructions assume you
+already have scsh 0.6.7 installed and available in your PATH.
+
+1. Set the Elisp `geiser-scheme-dir' variable to wherever you’re
+working from; here’s what I do:
+
+  (setq geiser-scheme-dir
+    (expand-file-name "~/Code/geiser-scsh/scheme/"))
+
+2. Load up `geiser-scsh.el'.
+
+3. Run `M-x customize-group ENTER geiser ENTER', and set the following
+variables:
+
+Variable 	                       Value        
+--------------------------------------------------------------------
+Geiser Repl Skip Version Check P       on
+Geiser Active Implementations          scsh
+Geiser Default Implementation          scsh
+
+(Note that you’ll need to set `geiser-scheme-dir' back to its original
+value if you want to go back to using Guile or Racket.)
+
+At this point, you should be able to do `M-x run-scsh' enjoy your scsh
+hacking with nice symbol and module completions, macroexpansions, etc.
+If you’re going to hack on the Geiser support, do `C-u M-x
+geiser-show-logs'; a buffer will open where you can listen to Emacs
+and scsh talking.  And if all else fails, the source is your
+friend. :-}
+
+                             * Overview *
 --------------------------------------------------------------------
 
-This is an attempt to make Scsh 0.6.7 one of the Scheme
-implementations supported by Geiser.  For more information about Scsh
-and Geiser, see http://www.scsh.net and http://geiser.nongnu.org,
-respectively.  (If you're using Scsh 0.7, see the note at the bottom
-of this page.)
+This project aims to make scsh one of the Scheme implementations
+supported by Geiser.  For more information about scsh and Geiser, see
+http://www.scsh.net and http://geiser.nongnu.org, respectively.
 
-See the TODO.org file for a matrix of Geiser commands and their
-implementation statuses.  A healthy portion of Geiser's functionality
-is implemented, enough to hack Scsh's Geiser support from inside
-Geiser itself.  Which is good fun. :-}
+Right now scsh 0.6.7 (classic) is being worked on, but it shouldn't be
+too hard (one hopes) to get 0.7 working too.  Interested Scheme
+hackers can check out scsh 0.7 here: https://github.com/scheme/scsh.
 
-However, the work is still in progress.  In some modules, the most
+See the TODO.txt file for a matrix of Geiser commands and their
+current implementation statuses.  A healthy portion of Geiser's
+functionality is implemented, enough to hack scsh's Geiser support
+from inside Geiser itself.  Which is good fun. :-}
+
+Note that this work is still in progress.  In some modules, the most
 basic possible versions of the Geiser interfaces are exported by each
 module; in a number of cases when a procedure can return '() or #f, we
 do so (pending a better solution to be implemented later, of course).
 
-Help from any interested Scheme hackers is, of course, welcome.
+Help from any interested Scheme hackers is appreciated.
 
-Finally, the Scsh manual is available in Texinfo format here:
+You can get the scsh 0.6.7 manual in Texinfo format here:
 https://github.com/rmloveland/scsh-manual-texinfo
 
-
-                      (A note on Scsh 0.7)
+                         * Acknowledgements *
 --------------------------------------------------------------------
-
-Adding support for the newer version of Scsh (0.7) is also a goal of
-this project, assuming it hasn't been done already.  Interested Scheme
-hackers can check out Scsh 0.7 here: https://github.com/scheme/scsh.
-
-I suspect that Scsh 0.7 (and the underlying updated Scheme 48) would
-be able to expose even more elaborate (and cool!) introspective
-facilities to the Schemer doing the Geiser integration.
 
 Thanks to Taylor Campbell for writing SLIME48, from which most of the
 symbol and module completion code was adapted.  It's also just a great
