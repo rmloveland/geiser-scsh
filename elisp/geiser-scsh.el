@@ -57,6 +57,8 @@ this variable to t."
   :type 'boolean
   :group 'geiser-scsh)
 
+
+
 (geiser-custom--defcustom geiser-scsh-debug-show-bt-p nil
   "Whether to autmatically show a full backtrace when entering the debugger.
 If `nil', only the last frame is shown."
@@ -117,6 +119,8 @@ effect on new REPLs. For existing ones, use the command
   :type '(repeat string)
   :group 'geiser-scsh)
 
+
+
 ;;; REPL support:
 
 (defun geiser-scsh--binary ()
@@ -141,7 +145,7 @@ This function uses `geiser-scsh-init-file' if it exists."
   (let ((linearized-cdr-args (geiser-scsh--linearize-args (cdr args)))
 	(linearized-args (geiser-scsh--linearize-args args)))
   (case proc
-    ((eval compile) 
+    ((eval compile)
      (cond ((string-match "ge:completions" linearized-cdr-args)
 	    (format "(ge:eval '%s 'NIL)" linearized-cdr-args))
 	   ((string-match "ge:macroexpand" linearized-cdr-args)
@@ -173,6 +177,8 @@ This function uses `geiser-scsh-init-file' if it exists."
              (car (geiser-syntax--read-from-string module))
            (error :f)))
         (t :f)))
+
+
 
 (defun geiser-scsh--module-cmd (module fmt &optional def)
   (when module
@@ -228,10 +234,12 @@ This function uses `geiser-scsh-init-file' if it exists."
 (defun geiser-scsh--guess ()
   (save-excursion
     (goto-char (point-min))
-    (re-search-forward 
+    (re-search-forward
      ;; geiser-scsh--guess-re
      geiser-scsh--module-re
      nil t)))
+
+
 
 ;;; Additional keywords and syntax -- this should probably be left to
 ;;; the user during customization, but right now I'm the only user. :-}
@@ -294,6 +302,8 @@ This function uses `geiser-scsh-init-file' if it exists."
     `((,(format "[[(]%s\\>" (regexp-opt geiser-scsh-extra-keywords 1))
        . 1))))
 
+
+
 (geiser-syntax--scheme-indent
  (c-declare 0)
  (c-lambda 2)
@@ -351,6 +361,8 @@ This function uses `geiser-scsh-init-file' if it exists."
  (let-fluids defun)
  (spawn-on-scheduler 1 no-font-lock)
  (with-new-proposal 1)
+
+
 
  ;; scsh
  (with-current-input-port 2)
@@ -415,6 +427,8 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 		 `(quote ()))))
     (geiser-eval--send/wait code)))
 
+
+
 (defun geiser-scsh--startup (remote)
   ;; This local variable is probably unnecessary for Scsh.
   (set (make-local-variable 'compilation-error-regexp-alist)
@@ -471,6 +485,8 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 (defun geiser-con--connection-eot-re (prompt debug)
   (geiser-con--combined-prompt (format "%s" prompt)
                                (and debug (format "%s" debug))))
+
+
 
 ;; This needed to be set because its default value, NIL, was being
 ;; FUNCALLed, which was making Emacs very unhappy.  I'm sure there is
