@@ -15,7 +15,7 @@
   M-.		geiser-edit-symbol-at-point                      No
   M-`		geiser-completion--complete-module               No
 
-  C-c TAB	geiser-repl-import-module                        No
+  C-c TAB	geiser-repl-import-module                        Yes
   C-c RET	switch-to-geiser-module                          Yes
   C-c C-q	geiser-repl-exit                                 Yes
   C-c C-r	geiser-add-to-load-path                          Yes
