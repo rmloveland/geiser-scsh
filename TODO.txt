@@ -1,6 +1,6 @@
-#+title: Geiser Scsh TODO
-#+author: Rich Loveland
-#+email: r@rmloveland.com
+                           Geiser Scsh TODO
+                            Rich Loveland
+                           r@rmloveland.com
 
 * Implementation status of Geiser commands
 
@@ -72,57 +72,63 @@
 
 * Things still to do!
 
-** TODO Get crossreferencing (xref) working
+** Get crossreferencing (xref) working
 
-   See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for
-   some details about how to accomplish this.
+See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some
+details about how to accomplish this.
 
 * Things already done
 
-** DONE Include Campbell's APROPOS.SCM?
+** Include Campbell's APROPOS.SCM?
 
-   It would be really nifty to have a command like
-   `geiser-scsh-apropos', bound to something like `C-c C-d (C-)p',
-   that ran APROPOS-ALL on the symbol at point and sent its output to
-   a separate buffer a la the macroexpansion things.
+It would be really nifty to have a command like `geiser-scsh-apropos',
+bound to something like `C-c C-d (C-)p', that ran APROPOS-ALL on the
+symbol at point and sent its output to a separate buffer a la the
+macroexpansion things.
 
-   - Tue Feb 4 22:55:11 2014: I've cheated and just loaded apropos.scm
-     at startup, so it's there in the REPL.  Not the most elegant
-     solution, but it saves me having to load it in every session.
-     This should really be loaded as part of my personal scsh
-     environment, not here.
+Tue Feb 4 22:55:11 2014:
 
-** DONE Write some kind of `Get Started' guide detailing the settings you need
+I've cheated and just loaded apropos.scm at startup, so it's there in
+the REPL.  Not the most elegant solution, but it saves me having to
+load it in every session.  This should really be loaded as part of my
+personal scsh environment, not here.
 
-   ... and in what order ...
+** Write some kind of `Get Started' guide detailing the settings you need
 
-   - Tue Feb  4 22:58:48 2014: [[http://logicgrimoire.wordpress.com/2014/01/11/geiser-and-scsh-are-talking/][Published]].
+Tue Feb  4 22:58:48 2014:
 
-** DONE Get `geiser-repl-import-module' working
+Published at
+http://logicgrimoire.wordpress.com/2014/01/11/geiser-and-scsh-are-talking
 
-   - Tue Feb 4 22:58:00 2014: This appears to be working now, might
-     have just had a wee misconfiguration somewhere.
+** Get `geiser-repl-import-module' working
 
-** DONE Add scsh to Geiser's list of active implementations programmatically?
+Tue Feb 4 22:58:00 2014:
 
-   Update, Tue Jan  7 22:47:15 2014:  No, let's leave it to the user for now.
+This appears to be working now, might have just had a wee
+misconfiguration somewhere.
 
-   Figure out how to do this the right way at Geiser load time, so the user doesn't have to
-   do M-x customize.
+** Add scsh to Geiser's list of active implementations programmatically?
 
-** DONE Port remaining Scheme files
+Figure out how to do this the right way at Geiser load time, so the
+user doesn't have to do M-x customize.
 
-   Note that we use the term ``port'' lightly; we mean simply that the
-   most basic, nonfunctional versions of all of the interfaces are
-   exported by each module.
+Tue Jan  7 22:47:15 2014:
 
-   - [X] emacs.scm
-   - [X] evaluation.scm
-   - [X] doc.scm
-   - [X] xref.scm (depends on doc.scm)
+No, let's leave it to the user for now.
 
-** DONE Port completion.scm
+** Port remaining Scheme files
 
-** DONE Port modules.scm
+Note that we use the term ``port'' lightly; we mean simply that the
+most basic, nonfunctional versions of all of the interfaces are
+exported by each module.
 
-** DONE Port utils.scm to scsh
+- emacs.scm
+- evaluation.scm
+- doc.scm
+- xref.scm (depends on doc.scm)
+
+** Port completion.scm
+
+** Port modules.scm
+
+** Port utils.scm to scsh
