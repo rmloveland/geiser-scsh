@@ -1,7 +1,7 @@
 ;; geiser-scsh.el -- scsh's implementation of the geiser protocols
 
 ;; Copyright (C) 2009, 2010, 2011, 2012, 2013 Jose Antonio Ortega Ruiz
-;; Copyright (C) 2013 Rich Loveland
+;; Copyright (C) 2013, 2014 Rich Loveland
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the Modified BSD License. You should
@@ -25,33 +25,33 @@
 ;;; Customization:
 
 (defgroup geiser-scsh nil
-  "Customization for Geiser's Scsh flavour."
+  "Customization for Geiser's scsh flavour."
   :group 'geiser)
 
 (geiser-custom--defcustom geiser-scsh-binary
   (cond ((eq system-type 'windows-nt) "scsh.exe")
         ((eq system-type 'darwin) "scsh")
         (t "scsh"))
-  "Name to use to call the Scsh executable when starting a REPL."
+  "Name to use to call the scsh executable when starting a REPL."
   :type '(choice string (repeat string))
   :group 'geiser-scsh)
 
 (geiser-custom--defcustom geiser-scsh-load-path nil
-  "A list of paths to be added to Scsh's load path when it's
+  "A list of paths to be added to scsh's load path when it's
 started."
   :type '(repeat file)
   :group 'geiser-scsh)
 
 (geiser-custom--defcustom geiser-scsh-init-file ""
-  "Initialization file with user code for the Scsh REPL.
+  "Initialization file with user code for the scsh REPL.
 If all you want is to load ~/.scsh, set
 `geiser-scsh-load-init-file-p' instead."
   :type 'string
   :group 'geiser-scsh)
 
 (geiser-custom--defcustom geiser-scsh-load-init-file-p nil
-  "Whether to load ~/.scsh when starting Scsh.
-Note that, due to peculiarities in the way Scsh loads its init
+  "Whether to load ~/.scsh when starting scsh.
+Note that, due to peculiarities in the way scsh loads its init
 file, using `geiser-scsh-init-file' is not equivalent to setting
 this variable to t."
   :type 'boolean
@@ -77,7 +77,7 @@ If `t', Geiser will use `next-error' to jump to the error's location."
   :group 'geiser-scsh)
 
 (geiser-custom--defcustom geiser-scsh-warning-level 'none
-  "Verbosity of the warnings reported by Scsh.
+  "Verbosity of the warnings reported by scsh.
 
 You can either choose one of the predefined warning sets, or
 provide a list of symbols identifying the ones you want. Possible
@@ -100,7 +100,7 @@ effect on new REPLs. For existing ones, use the command
   :group 'geiser-scsh)
 
 (geiser-custom--defcustom geiser-scsh-extra-keywords nil
-  "Extra keywords highlighted in Scsh scheme buffers."
+  "Extra keywords highlighted in scsh scheme buffers."
   :type '(repeat string)
   :group 'geiser-scsh)
 
@@ -129,7 +129,7 @@ effect on new REPLs. For existing ones, use the command
     geiser-scsh-binary))
 
 (defun geiser-scsh--parameters ()
-  "Return a list with all parameters needed to start Scsh.
+  "Return a list with all parameters needed to start scsh.
 This function uses `geiser-scsh-init-file' if it exists."
   '())
 
@@ -225,8 +225,8 @@ This function uses `geiser-scsh-init-file' if it exists."
   (when (stringp msg)
     (save-excursion (insert msg))))
 
-;;; Trying to ascertain whether a buffer is Scsh Scheme -- this regex
-;;; is likely to be really, really wrong.
+;; Trying to ascertain whether a buffer is scsh Scheme -- this regex
+;; is likely to be really, really wrong.
 (defvar geiser-scsh--guess-re
   (format "\\(%s\\|#! *.+\\(/\\| \\)scsh\\( *\\\\\\)?\\)"
           geiser-scsh--module-re))
@@ -235,14 +235,15 @@ This function uses `geiser-scsh-init-file' if it exists."
   (save-excursion
     (goto-char (point-min))
     (re-search-forward
-     ;; geiser-scsh--guess-re
      geiser-scsh--module-re
      nil t)))
 
 
 
-;;; Additional keywords and syntax -- this should probably be left to
-;;; the user during customization, but right now I'm the only user. :-}
+;; Additional keywords and syntax -- this should probably be left to
+;; the user during customization, but right now I'm the only user. :-}
+;; Note that these keywords are taken from Scheme48 mode:
+;; http://www.emacswiki.org/cgi-bin/emacs/Scheme48Mode
 
 (setq geiser-scsh-extra-keywords '("dynamic-wind"
 				   "destructure"
@@ -430,7 +431,7 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 
 
 (defun geiser-scsh--startup (remote)
-  ;; This local variable is probably unnecessary for Scsh.
+  ;; This local variable is probably unnecessary for scsh.
   (set (make-local-variable 'compilation-error-regexp-alist)
        `((,geiser-scsh--path-rx geiser-scsh--resolve-file-x)
          ("^  +\\([0-9]+\\):\\([0-9]+\\)" nil 1 2)))
@@ -440,7 +441,7 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 						   compilation-error-face)))
   (let* ((geiser-log-verbose-p t)
 	 ;; Note that you need to set the variable of
-	 ;; `geiser-scheme-dir' before running Scsh.
+	 ;; `geiser-scheme-dir' before running scsh.
 	 (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
 	 (load-geiser-cmd (format ",translate =geiser-scsh-dir/ %s" path))
 	 (load-cmd ",exec ,load =geiser-scsh-dir/load.scm"))
@@ -476,11 +477,11 @@ The new level is set using the value of `geiser-scsh-warning-level'."
   (search-forward (format "%s" id) nil t))
 
 ;; This function (snarfed from geiser-connection.el) needed to be
-;; redefined in order for Geiser's Scsh connection to work at all --
+;; redefined in order for Geiser's scsh connection to work at all --
 ;; this is because the original version of this function was inserting
-;; spurious newlines into the regular expression that the `tq' package
+;; spurious newlines into the regular expression that the 'tq' package
 ;; uses to determine where process output ends.  This caused the regex
-;; not to match, so that `tq' didn't know the process's output was
+;; not to match, so that 'tq' didn't know the process's output was
 ;; ready.
 (defun geiser-con--connection-eot-re (prompt debug)
   (geiser-con--combined-prompt (format "%s" prompt)
