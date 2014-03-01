@@ -17,7 +17,7 @@
     (sort-list completions string<?)))
 
 (define (ge:module-completions prefix)
-  (compute-module-completions prefix (gather-all-packages) string-prefix-ci?))
+  (compute-module-completions prefix (gather-all-packages) string-prefix?))
 
 (define (read-from-string string)
       (read (make-string-input-port string)))
@@ -53,7 +53,7 @@
            => (lambda (package)
                 (let ((completions
                        (compute-completions prefix-string package
-                                            string-prefix-ci?)))
+                                            string-prefix?)))
                   (list completions
                         (longest-common-prefix completions)))))
           (else
@@ -78,6 +78,16 @@
               (package-opens package))
     completions))
 
+(define (string-prefix? prefix string)
+  (let ((prefix-len (string-length prefix)))
+    (and (<= prefix-len (string-length string))
+         (let loop ((i 0))
+           (cond ((= i prefix-len) #t)
+                 ((char=? (string-ref prefix i)
+                          (string-ref string i))
+                  (loop (+ i 1)))
+                 (else #f))))))
+
 (define (make-completion-predicate prefix-string completion?)
   ;++ This is a kind of cheesy hack.  What we really want is for the
   ;++ reader to expose its symbol recognizer.  Fortunately, symbols are
@@ -92,7 +102,13 @@
              string                     ;ignore
              #t))
           (else
-           (error "Invalid prefix string: ~S" prefix-string)))))
+           (display "Invalid prefix string: ~S" prefix-string)))))
+
+(define-syntax receive
+  (syntax-rules ()
+    ((receive formals expression body ...)
+     (call-with-values (lambda () expression)
+                       (lambda formals body ...)))))
 
 (define (longest-common-prefix strings)
   (if (null? strings)

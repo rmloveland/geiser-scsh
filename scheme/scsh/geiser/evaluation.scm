@@ -45,11 +45,12 @@
   (let* ((module (or
 		  (ge:find-module module-name)
 		  (interaction-environment))))
-    (receive (first second)
-	(values
-	 (eval-with-output form module)
-	 '())
-    (write-result first second))))
+    (call-with-values
+	(lambda ()
+	  (values (eval-with-output form module)
+		  '()))
+      (lambda (first second)
+	(write-result first second)))))
 
 (define ge:load-file load)
 
@@ -65,7 +66,4 @@
 (define ge:macroexpand expand*)
 
 (define (ge:add-to-load-path dir)
-  (and (file-directory? dir)
-       (not (member dir (lib-dirs)))
-       (begin (lib-dirs-append! dir))
-              #t))
+  #t)

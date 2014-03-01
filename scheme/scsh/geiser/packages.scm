@@ -1,27 +1,25 @@
 ;; Structures are listed in dependency order.
 
 (define-structure geiser-utils geiser-utils-interface
-  (open scheme-with-scsh
+  (open scheme 
 	big-util
-	re-old-funs
 	formats
-	sorting
+	sort
 	packages
 	command-processor)
   (files utils))
 
 (define-structure geiser-modules geiser-modules-interface
-  (open scheme-with-scsh
-	srfi-1
-	re-old-funs
+  (open scheme 
+
 	disclosers
 	closures
 	geiser-utils)
   (files modules))
 
 (define-structure geiser-evaluation geiser-evaluation-interface
-  (open scheme-with-scsh
-	scsh
+  (open scheme 
+	
 	command-processor
 	extended-ports
 	environments
@@ -29,44 +27,44 @@
 	syntactic
 	geiser-modules
 	nodes
-	srfi-1
 	pp)
   (files evaluation))
 
 (define-structure geiser-doc geiser-doc-interface
-  (open scheme-with-scsh
-	scsh
+  (open scheme 
+	formats
 	geiser-utils
 	geiser-modules
-	srfi-1
 	syntactic
 	pp
 	random
+	extended-ports
 	tables)
   (files doc))
 
 (define-structure geiser-completion geiser-completion-interface
-  (open scheme-with-scsh
+  (open scheme 
 	packages
 	packages-internal
 	handle				; ignore-errors
 	util 				; fold
 	sort
 	tables
-	srfi-13				; string-prefix-ci?
+	extended-ports
+	formats
 	geiser-utils
 	geiser-modules)
   (files completion))
 
 (define-structure geiser-xref geiser-xref-interface
-  (open scheme-with-scsh
+  (open scheme 
 	geiser-utils
 	geiser-modules
 	geiser-doc)
   (files xref))
 
 (define-structure geiser-emacs geiser-emacs-interface
-  (open scheme-with-scsh
+  (open scheme 
 	geiser-evaluation
 	command-processor
 	geiser-modules

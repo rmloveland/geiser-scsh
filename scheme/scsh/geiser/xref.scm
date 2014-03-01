@@ -65,10 +65,4 @@
   '())
 
 (define (ge:find-file path)
-  (let loop ((dirs (lib-dirs)))
-    (if (null? dirs)
-	#f
-        (let ((candidate (string-append (car dirs) "/" path)))
-          (if (file-exists? candidate)
-	      candidate
-	      (loop (cdr dirs)))))))
+  #f)

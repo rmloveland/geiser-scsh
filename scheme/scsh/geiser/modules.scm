@@ -21,7 +21,7 @@
   (syntax-rules ()
     ((ge:symbol-module proc-name . all)
      (if (ge:bound? (quote proc-name))
-	 (list (second (%describe-module-hierarchy proc-name)))
+	 (list (cadr (%describe-module-hierarchy proc-name)))
 	 '()))))
 
 (define (%describe-module-hierarchy proc-name)

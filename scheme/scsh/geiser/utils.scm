@@ -28,17 +28,19 @@
 (define (ge:sort-symbols! syms)
   (let ((cmp (lambda (l r)
                (string<? (symbol->string l) (symbol->string r)))))
-    (list-sort! syms cmp)))
+    (sort-list! syms cmp)))
 
 (define (ge:make-symbol-sort sel)
   (let ((cmp (lambda (a b)
                (string<? (symbol->string (sel a))
                          (symbol->string (sel b))))))
     (lambda (syms)
-      (list-sort! syms cmp))))
+      (sort-list! syms cmp))))
 
 (define (ge:gensym? sym)
   (and (symbol? sym) (gensym-name? (format #f "~A" sym))))
 
 (define (gensym-name? name)
-  (and (string-match "^#[{]" name) #t))
+  (let ((vec (list->vector (string->list name))))
+    (and (char=? (vector-ref vec 0) #\#)
+	 (char=? (vector-ref vec 1) #\[))))
