@@ -5,57 +5,28 @@
 ;;; This code is written by Taylor Campbell and placed in the Public
 ;;; Domain.  All warranties are disclaimed.
 
-(define-structure apropos (export apropos apropos-all
-                                  with-apropos-verbosity
-                                  set-apropos-verbosity!)
+(define-structure apropos (export apropos apropos-all)
   (open scheme
         fluids
-	cells				; scm48: ???
         signals
         features
         packages
         packages-internal
-        (subset package-commands-internal (config-package)) ; scm48: ???
+        package-commands-internal
         bindings
         locations
         disclosers
         tables
-        sorting 			; `sort' in scm48
-	;;sort                          ; scm48 package name
+	sort
         destructuring
         meta-types
-	(subset display-conditions (limited-write)) ; scm48: ???
+	display-conditions
         extended-ports
         )
   (optimize auto-integrate)
   (begin
 
-(define $apropos-verbosity
-        (make-fluid (make-cell '(value))))
-
-(define (apropos-verbosity) (fluid-cell-ref $apropos-verbosity))
-
-(define (set-apropos-verbosity! verbosity)
-  (guarantee-apropos-verbosity verbosity)
-  (fluid-cell-set! $apropos-verbosity verbosity))
-
-(define (with-apropos-verbosity verbosity thunk)
-  (guarantee-apropos-verbosity verbosity)
-  (let-fluid $apropos-verbosity (make-cell verbosity) thunk))
-
-(define (guarantee-apropos-verbosity verbosity)
-  (let loop ((v verbosity))
-    (cond ((null? v) #t)
-          ((pair? v)
-           (let ((x (car v)))
-             (if (and (symbol? x)
-                      (memq x '(inferred-type
-                                exported-type
-                                value
-                                origin)))
-                 (loop (cdr v))
-                 (error "invalid APROPOS verbosity specifier" x))))
-          (else (error "invalid APROPOS verbosity" verbosity)))))
+(define (apropos-verbosity) '(value))
 
 (define (apropos-all id . config)
   (let ((substring (apropos-of id))
@@ -112,10 +83,7 @@
                                  binding)
                            entries))))
          package)
-        ;; Remove ORIGIN because we know it's from this package.
-        (with-apropos-verbosity (delq 'origin (apropos-verbosity))
-          (lambda ()
-            (display-entries entries (package-uid package) out))))
+	(display-entries entries (package-uid package) out))
       (for-each (lambda (struct)
                   (fresh-line out)
                   (*apropos-structure substring struct out
@@ -152,10 +120,9 @@
 (define (display-entries entries pkg-uid out)
   ((lambda (body)
      (for-each body
-               (list-sort! (lambda (a b)
-                             (string<? (symbol->string (car a))
-                                       (symbol->string (car b))))
-                           entries)))
+               (sort-list entries (lambda (a b)
+				     (string<? (symbol->string (car a))
+					       (symbol->string (car b)))))))
    (lambda (entry)
      (destructure (( (name exported-type binding)
                      entry))
@@ -234,7 +201,7 @@
         ((location? location)
          (cond ((location-assigned? location)
                 (display " = " out)
-                (limited-write (contents location)
+		(limited-write (contents location)
                                out
                                (apropos-depth)
                                (apropos-breadth)))
