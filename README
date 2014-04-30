@@ -8,15 +8,21 @@
 Here's how to get up and running.  These instructions assume you
 already have scsh 0.6.7 installed and available in your PATH.
 
-1. Set the Elisp `geiser-scheme-dir' variable to wherever you’re
+1. Byte-compile and load up `geiser-scsh.el'.
+
+2. Set the Elisp `geiser-scheme-dir' variable to wherever you’re
 working from; here’s what I do:
 
   (setq geiser-scheme-dir
     (expand-file-name "~/Code/geiser-scsh/scheme/"))
 
-2. Load up `geiser-scsh.el'.
+3. Tell Geiser where to find your Info manuals (this assumes you have
+installed the scsh Texinfo manual available at
+https://github.com/rmloveland/scsh-manual-texinfo).
 
-3. Run `M-x customize-group ENTER geiser ENTER', and set the following
+  (setq geiser-scsh-manual-lookup-nodes '("scsh" "r5rs"))
+
+4. Run `M-x customize-group ENTER geiser ENTER', and set the following
 variables:
 
 Variable 	                       Value        
@@ -28,12 +34,13 @@ Geiser Default Implementation          scsh
 (Note that you’ll need to set `geiser-scheme-dir' back to its original
 value if you want to go back to using Guile or Racket.)
 
-At this point, you should be able to do `M-x run-scsh' enjoy your scsh
-hacking with nice symbol and module completions, macroexpansions, etc.
-If you’re going to hack on the Geiser support, do `C-u M-x
-geiser-show-logs'; a buffer will open where you can listen to Emacs
-and scsh talking.  And if all else fails, the source is your
-friend. :-}
+5. Try `M-x run-scsh' and see what happens.
+
+At this point, you should be able to enjoy your scsh hacking with nice
+symbol and module completions, macroexpansions, etc.  If you’re going
+to hack on the Geiser support, do `C-u M-x geiser-show-logs'; a buffer
+will open where you can listen to Emacs and scsh talking.  And if all
+else fails, the source is your friend. :-}
 
                              * Overview *
 --------------------------------------------------------------------
