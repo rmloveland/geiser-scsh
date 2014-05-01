@@ -27,7 +27,7 @@
   C-c C-d RET	geiser-repl--doc-module                          No
   C-c C-d a	geiser-autodoc-mode                              No
   C-c C-d d	geiser-doc-symbol-at-point                       No
-  C-c C-d i	geiser-doc-look-up-manual                        No
+  C-c C-d i	geiser-doc-look-up-manual                        Yes
   C-c C-d m	geiser-repl--doc-module                          No
   
   C-c M-o       geiser-repl-clear-buffer                         Yes
