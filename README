@@ -21,6 +21,10 @@ installed the scsh Texinfo manual available at
 https://github.com/rmloveland/scsh-manual-texinfo).
 
   (setq geiser-scsh-manual-lookup-nodes '("scsh" "r5rs"))
+  (setq geiser-scsh-manual-lookup-other-window-p t) ;Optional, but convenient.
+
+Note: If Info lookup isn't working, try `M-x info-lookup-reset' to
+clear info's cache so that it can see your scsh manual install.
 
 4. Run `M-x customize-group ENTER geiser ENTER', and set the following
 variables:
