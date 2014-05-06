@@ -1,17 +1,17 @@
 ;;; xref.scm -- cross-referencing utilities
 
 ;; Copyright (C) 2009, 2010 Jose Antonio Ortega Ruiz
-;; Copyright (C) 2013 Rich Loveland
+;; Copyright (C) 2013, 2014 Rich Loveland
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the Modified BSD License. You should
 ;; have received a copy of the license along with this program. If
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
-;; SUCCESS: $10 = (("file") ("line"))
-;; FAIL: $11 = ()
+;;++ This procedure outputs '(("file") ("line")) on success, '()
+;;++ otherwise.
 (define (ge:symbol-location sym)
-  ;; Sym -> List
+  ;; Symbol -> List
   (cond ((ge:symbol-module sym) 
 	 => ge:module-location)
         (else (let ((obj (ge:symbol->object sym)))
@@ -72,3 +72,5 @@
           (if (file-exists? candidate)
 	      candidate
 	      (loop (cdr dirs)))))))
+
+;; xref.scm ends here

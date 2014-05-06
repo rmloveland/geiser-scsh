@@ -1,7 +1,7 @@
 ;;; utils.scm -- utility functions
 
 ;; Copyright (C) 2009, 2010, 2011 Jose Antonio Ortega Ruiz
-;; Copyright (C) 2013 Rich Loveland
+;; Copyright (C) 2013, 2014 Rich Loveland
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the Modified BSD License. You should
@@ -42,3 +42,5 @@
 
 (define (gensym-name? name)
   (and (string-match "^#[{]" name) #t))
+
+;; utils.scm ends here

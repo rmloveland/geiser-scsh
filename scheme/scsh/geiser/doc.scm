@@ -1,7 +1,7 @@
 ;;; doc.scm -- procedures providing documentation on scheme objects
 
 ;; Copyright (C) 2009, 2010 Jose Antonio Ortega Ruiz
-;; Copyright (C) 2013 Rich Loveland
+;; Copyright (C) 2013, 2014 Rich Loveland
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the Modified BSD License. You should
@@ -67,13 +67,13 @@
 	      obj (list (cons key args))))
 
 (define (procedure-property obj key)	
-  ;; Proc Sym -> Sym or #f
+  ;; Procedure Symbol -> Symbol OR #f
   (let ((retval (table-ref *procedure-properties-table* obj)))
     (if retval
 	(cdr (assoc key retval))
 	#f)))
 
-(define (value-str obj)			
+(define (value-str obj)
   (format #f "~A" obj))
 
 (define (assq-ref alist key)		
@@ -91,7 +91,7 @@
   '())
 
 (define (arguments proc)
-  ;; Proc -> List?
+  ;; Procedure -> List OR #f
   (define (clist f) (lambda (x) (let ((y (f x))) (and y (list y)))))
   (cond ((doc->args proc) => list)
         ((procedure-property proc 'arglist) => (clist arglist->args))
@@ -99,8 +99,8 @@
         ((procedure-property proc 'arity) => (clist arity->args))
         (else #f)))
 
-;; This procedure will come in handy once we can actually get hold of
-;; the source of Scsh procedures. Not yet, though.
+;;++ This procedure will come in handy once we can actually get hold
+;;++ of the source of Scsh procedures. Not yet, though.
 (define (source->args src)
   (let ((formals (cadr src)))
     (cond ((list? formals) `((required . ,formals)))
@@ -108,7 +108,7 @@
            `((required . ,(car formals)) (rest . ,(cdr formals))))
           (else #f))))
 
-;; Defined in SRFI-1; this can probably be removed.
+;;++ Defined in SRFI-1; this can probably be removed.
 (define (iota n)
   (let loop ((count (- n 1))
 	     (result '()))
@@ -180,3 +180,5 @@
 	'("procs")
 	'("syntax")
 	'("vars")))
+
+;; doc.scm ends here

@@ -1,4 +1,13 @@
-;; Structures are listed in dependency order.
+;;; packages.scm -- define structures that back our interfaces
+
+;; Copyright (C) 2013, 2014 Rich Loveland
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the Modified BSD License. You should
+;; have received a copy of the license along with this program. If
+;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
+
+;;++ The following structures are listed in dependency order.
 
 (define-structure geiser-utils geiser-utils-interface
   (open scheme-with-scsh
@@ -74,3 +83,5 @@
 	geiser-xref
 	geiser-doc)
   (files emacs))
+
+;; packages.scm ends here

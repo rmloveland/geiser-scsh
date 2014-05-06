@@ -1,4 +1,4 @@
-;;; -*- mode: scheme; scheme48-package: (config) -*-
+;;; -*- mode: scheme -*-
 
 ;;;;;; Apropos: searching for bound names
 
@@ -10,21 +10,20 @@
                                   set-apropos-verbosity!)
   (open scheme
         fluids
-	cells				; scm48: ???
+	cells
         signals
         features
         packages
         packages-internal
-        (subset package-commands-internal (config-package)) ; scm48: ???
+        (subset package-commands-internal (config-package))
         bindings
         locations
         disclosers
         tables
-        sorting 			; `sort' in scm48
-	;;sort                          ; scm48 package name
+        sorting
         destructuring
         meta-types
-	(subset display-conditions (limited-write)) ; scm48: ???
+	(subset display-conditions (limited-write))
         extended-ports
         )
   (optimize auto-integrate)

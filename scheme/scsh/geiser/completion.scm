@@ -1,7 +1,7 @@
 ;;; completion.scm -- completing known symbols and module names
 
 ;; Copyright (C) 2009, 2012 Jose Antonio Ortega Ruiz
-;; Copyright (C) 2013 Rich Loveland
+;; Copyright (C) 2013, 2014 Rich Loveland
 
 ;; This file repurposes some Public Domain code from Taylor Campbell's
 ;; SLIME48, which you can read more about at
@@ -114,3 +114,5 @@
                          (substring shorter 0 i))))))
             (cdr strings)
             (car strings))))
+
+;; completion.scm ends here
