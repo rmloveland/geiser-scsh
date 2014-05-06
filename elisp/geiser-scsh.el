@@ -198,8 +198,8 @@ This function uses `geiser-scsh-init-file' if it exists."
 
 (defun geiser-scsh--exit-command () ",exit")
 
-;; Note to self: the definition of this function may need to be
-;; updated once you understand its purpose.
+;;++ Note to self: the definition of this function may need to be
+;;++ updated once you understand its purpose.
 (defun geiser-scsh--symbol-begin (module)
   (if module
       (max (save-excursion (beginning-of-line) (point))
@@ -225,8 +225,7 @@ This function uses `geiser-scsh-init-file' if it exists."
   (when (stringp msg)
     (save-excursion (insert msg))))
 
-;; Trying to ascertain whether a buffer is scsh Scheme -- this regex
-;; is likely to be really, really wrong.
+;;++ This regex is likely to be really, really wrong.
 (defvar geiser-scsh--guess-re
   (format "\\(%s\\|#! *.+\\(/\\| \\)scsh\\( *\\\\\\)?\\)"
           geiser-scsh--module-re))
@@ -240,10 +239,10 @@ This function uses `geiser-scsh-init-file' if it exists."
 
 
 
-;; Additional keywords and syntax -- this should probably be left to
-;; the user during customization, but right now I'm the only user. :-}
-;; Note that these keywords are taken from Scheme48 mode:
-;; http://www.emacswiki.org/cgi-bin/emacs/Scheme48Mode
+;;++ Additional keywords and syntax -- this should probably be left to
+;;++ the user during customization, but right now I'm the only user. :-}
+;;++ Note that these keywords are taken from Scheme48 mode:
+;;++ http://www.emacswiki.org/cgi-bin/emacs/Scheme48Mode
 
 (setq geiser-scsh-extra-keywords '("dynamic-wind"
 				   "destructure"
@@ -305,6 +304,8 @@ This function uses `geiser-scsh-init-file' if it exists."
 
 
 
+;;++ Special indentation for Scheme 48 and scsh syntax.
+
 (geiser-syntax--scheme-indent
  (c-declare 0)
  (c-lambda 2)
@@ -317,7 +318,7 @@ This function uses `geiser-scsh-init-file' if it exists."
  (with-method 1)
  (dynamic-wind 0)
 
- ;; Scheme48
+ ;; Scheme 48
  (destructure 1)
  (enum-case 2)
  (environment-define! 2 no-font-lock)
@@ -431,7 +432,9 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 
 
 (defun geiser-scsh--startup (remote)
-  ;; This local variable is probably unnecessary for scsh.
+  ;;++ This local variable is probably unnecessary for scsh.  At some
+  ;;++ point we'll want to remove all compilation-related code from this
+  ;;++ file (See also: evaluation.scm).
   (set (make-local-variable 'compilation-error-regexp-alist)
        `((,geiser-scsh--path-rx geiser-scsh--resolve-file-x)
          ("^  +\\([0-9]+\\):\\([0-9]+\\)" nil 1 2)))
@@ -440,8 +443,8 @@ The new level is set using the value of `geiser-scsh-warning-level'."
                           `((,geiser-scsh--path-rx 1
 						   compilation-error-face)))
   (let* ((geiser-log-verbose-p t)
-	 ;; Note that you need to set the variable of
-	 ;; `geiser-scheme-dir' before running scsh.
+	 ;;++ Note that you need to manually set the value of
+	 ;;++ `geiser-scheme-dir' before running scsh (for now).
 	 (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
 	 (load-geiser-cmd (format ",translate =geiser-scsh-dir/ %s" path))
 	 (load-cmd ",exec ,load =geiser-scsh-dir/load.scm"))
@@ -476,22 +479,22 @@ The new level is set using the value of `geiser-scsh-warning-level'."
     (switch-to-buffer-other-window "*info*"))
   (search-forward (format "%s" id) nil t))
 
-;; This function (snarfed from geiser-connection.el) needed to be
-;; redefined in order for Geiser's scsh connection to work at all --
-;; this is because the original version of this function was inserting
-;; spurious newlines into the regular expression that the 'tq' package
-;; uses to determine where process output ends.  This caused the regex
-;; not to match, so that 'tq' didn't know the process's output was
-;; ready.
+;;++ This function (snarfed from geiser-connection.el) needed to be
+;;++ redefined in order for Geiser's scsh connection to work at all --
+;;++ this is because the original version of this function was inserting
+;;++ spurious newlines into the regular expression that the 'tq' package
+;;++ uses to determine where process output ends.  This caused the regex
+;;++ not to match, so that 'tq' didn't know the process's output was
+;;++ ready.
 (defun geiser-con--connection-eot-re (prompt debug)
   (geiser-con--combined-prompt (format "%s" prompt)
                                (and debug (format "%s" debug))))
 
 
 
-;; This needed to be set because its default value, NIL, was being
-;; FUNCALLed, which was making Emacs very unhappy.  I'm sure there is
-;; a better way to do this.
+;;++ This needed to be set because its default value, NIL, was being
+;;++ FUNCALLed, which was making Emacs unhappy.  I'm sure there is
+;;++ a better way to do this.
 (setq geiser-eval--get-module-function #'geiser-scsh--get-module)
 
 ;;; Implementation definition:
@@ -518,3 +521,5 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 (geiser-impl--add-to-alist 'regexp "\\.scm$" 'scsh t)
 
 (provide 'geiser-scsh)
+
+;; geiser-scsh.el ends here
