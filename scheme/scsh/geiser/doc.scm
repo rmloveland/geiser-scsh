@@ -108,15 +108,6 @@
            `((required . ,(car formals)) (rest . ,(cdr formals))))
           (else #f))))
 
-;;++ Defined in SRFI-1; this can probably be removed.
-(define (iota n)
-  (let loop ((count (- n 1))
-	     (result '()))
-    (if (= count 0)
-	(cons count result)
-	(loop (- count 1)
-	      (cons count result)))))
-
 (define (arity->args art)
   (define (gen-arg-names count)
     (map (lambda (x) '_) (iota (max count 0))))
