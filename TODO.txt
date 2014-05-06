@@ -72,6 +72,10 @@
 
 * Things still to do!
 
+** Remove IOTA from doc.scm
+
+Scsh already provides this in SRFI-1.
+
 ** Get crossreferencing (xref) working
 
 See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some
