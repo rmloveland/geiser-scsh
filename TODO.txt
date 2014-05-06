@@ -76,6 +76,12 @@
 
 Scsh already provides this in SRFI-1.
 
+** Make APROPOS and APROPOS-ALL into REPL commands
+
+We should be able to call like so:
+
+> ,apropos-all 'foo
+
 ** Get crossreferencing (xref) working
 
 See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some
