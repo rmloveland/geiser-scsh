@@ -72,10 +72,6 @@
 
 * Things still to do!
 
-** Remove IOTA from doc.scm
-
-Scsh already provides this in SRFI-1.
-
 ** Make APROPOS and APROPOS-ALL into REPL commands
 
 We should be able to call like so:
@@ -88,6 +84,10 @@ See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some
 details about how to accomplish this.
 
 * Things already done
+
+** Remove IOTA from doc.scm
+
+Scsh already provides this in SRFI-1.
 
 ** Include Campbell's APROPOS.SCM?
 
