@@ -30,7 +30,6 @@
 
 (define-structure geiser-evaluation geiser-evaluation-interface
   (open scheme-with-scsh
-	scsh
 	command-processor
 	extended-ports
 	environments
@@ -44,7 +43,6 @@
 
 (define-structure geiser-doc geiser-doc-interface
   (open scheme-with-scsh
-	scsh
 	geiser-utils
 	geiser-modules
 	srfi-1
