@@ -447,9 +447,11 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 	 ;;++ `geiser-scheme-dir' before running scsh (for now).
 	 (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
 	 (load-geiser-cmd (format ",translate =geiser-scsh-dir/ %s" path))
+	 (load-init-file-cmd (concat ",user ,load " geiser-scsh-init-file))
 	 (load-cmd ",exec ,load =geiser-scsh-dir/load.scm"))
     (geiser-scsh--set-load-path)
     (geiser-eval--send/wait load-geiser-cmd)
+    (if geiser-scsh-load-init-file-p (geiser-eval--send/wait load-init-file-cmd))
     (geiser-eval--send/wait load-cmd 5)))
 
 ;;; Manual lookup
