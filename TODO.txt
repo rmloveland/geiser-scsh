@@ -1,6 +1,6 @@
-                           Geiser Scsh TODO
-                            Rich Loveland
-                           r@rmloveland.com
+			   Geiser Scsh TODO
+			    Rich Loveland
+			   r@rmloveland.com
 
 * Implementation status of Geiser commands
 
@@ -72,16 +72,30 @@
 
 * Things still to do!
 
+** Implement 'geiser-disassemble-*'
+
+On the Scheme side, you will have to implement GE:DISASSEMBLE.  Use
+the 'disassembler' package:
+
+> ,open disassembler
+> (disassemble (lambda () (if (= 12 12) #t)))  ; Must be proc/cont.
+
+See ~/Desktop/current/foo.scm for the implementation of GE:DISASSEMBLE.
+
+On the Elisp side, you will have to implement the disassembler analogs
+to the GEISER-EXPAND-* functions.  These don't appear to exist in
+"stock" Geiser.
+
 ** Make APROPOS and APROPOS-ALL into REPL commands
 
-We should be able to call like so:
-
-> ,apropos-all 'foo
+   We should be able to call like so:
+   
+   > ,apropos-all 'foo   
 
 ** Get crossreferencing (xref) working
 
-See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some
-details about how to accomplish this.
+   See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some
+   details about how to accomplish this.
 
 * Things already done
 
@@ -142,3 +156,8 @@ exported by each module.
 ** Port modules.scm
 
 ** Port utils.scm to scsh
+
+
+Local Variables:
+Mode: Outline
+End:
