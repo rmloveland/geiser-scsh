@@ -521,7 +521,11 @@ The new level is set using the value of `geiser-scsh-warning-level'."
     (with-output-to-temp-buffer bufname
       (princ pass2))))
 
-(define-key geiser-mode-map (kbd "C-c RET C-d") #'geiser-scsh-disassemble-region)
+;;++ Not the right place to put this.  This keybinding and the
+;;++ disassembly code should probably be in the 'GEISER-DEBUG*'
+;;++ namespace.
+
+(define-key scheme-mode-map (kbd "C-c RET C-d") #'geiser-scsh-disassemble-region)
 
 ;;; Implementation definition:
 
