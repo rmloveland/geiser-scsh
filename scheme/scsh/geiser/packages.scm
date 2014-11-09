@@ -31,6 +31,7 @@
 (define-structure geiser-evaluation geiser-evaluation-interface
   (open scheme-with-scsh
 	command-processor
+	disassembler
 	extended-ports
 	environments
 	packages

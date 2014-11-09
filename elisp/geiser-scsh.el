@@ -499,6 +499,30 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 ;;++ a better way to do this.
 (setq geiser-eval--get-module-function #'geiser-scsh--get-module)
 
+
+;;; Rudimentary support for the scsh/s48 disassembler.
+
+;; Pops open a temp buffer with the disassembly output of the current
+;; region.
+
+;;++ This should work recursively, e.g., in cases where the
+;;++ disassembly output shows '(global vector-ref)', we should be able to
+;;++ see the disassembly output of 'vector-ref' too, if we choose.
+
+(defun geiser-scsh-disassemble-region (start end)
+  (interactive "r")
+  (let* ((str (buffer-substring-no-properties start end))
+	 (code (concat "(ge:disassemble " str ")"))
+	 (ret (geiser-eval--send/wait code))
+	 (raw (cdr (assoc 'output ret)))
+	 (pass1 (replace-regexp-in-string "#f" "" raw))
+	 (pass2 (replace-regexp-in-string "^> " "" pass1))
+	 (bufname "* Scsh Disassembler Output *"))
+    (with-output-to-temp-buffer bufname
+      (princ pass2))))
+
+(define-key geiser-mode-map (kbd "C-c RET C-d") #'geiser-scsh-disassemble-region)
+
 ;;; Implementation definition:
 
 (define-geiser-implementation scsh

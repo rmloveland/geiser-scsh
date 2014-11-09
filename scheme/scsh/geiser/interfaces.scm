@@ -38,6 +38,7 @@
 	  ge:macroexpand
 	  ge:load-file
 	  ge:set-warnings
+	  (ge:disassemble :syntax)
 	  ge:add-to-load-path))
 
 (define-interface geiser-emacs-interface

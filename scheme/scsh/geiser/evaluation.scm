@@ -74,4 +74,9 @@
        (begin (lib-dirs-append! dir))
               #t))
 
+(define-syntax ge:disassemble
+  (syntax-rules ()
+    ((ge:disassemble obj)
+     (disassemble (lambda () obj)))))
+
 ;; evaluation.scm ends here
