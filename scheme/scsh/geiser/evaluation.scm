@@ -77,6 +77,8 @@
 (define-syntax ge:disassemble
   (syntax-rules ()
     ((ge:disassemble obj)
-     (disassemble (lambda () obj)))))
+     (if (procedure? obj)
+	 (disassemble obj)
+	 (disassemble (lambda () obj))))))
 
 ;; evaluation.scm ends here
