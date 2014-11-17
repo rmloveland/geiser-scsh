@@ -510,17 +510,26 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 ;;++ see the disassembly output of 'vector-ref' too, if we choose.
 
 (defun geiser-scsh-disassemble-region (start end)
+  ;; Int Int -> State!
+  "Attempt to disassemble the region between START and END.
+Opens a new buffer with the output of the disassembler."
   (interactive "r")
   (let* ((str (buffer-substring-no-properties start end)))
     (geiser-scsh--really-disassemble str)))
 
 (defun geiser-scsh-disassemble-thing-at-point ()
+  ;; -> State!
+  "Attempt to disassemble the thing at point.
+Opens a new buffer with the output of the disassembler."
   (interactive)
   (let* ((it (thing-at-point 'symbol t)))
     (geiser-scsh--really-disassemble it)))
 
 (defun geiser-scsh--really-disassemble (str)
-  ;; String -> IO! State!
+  ;; String -> State!
+  "Pass STR to the Scheme disassembler.
+This is an internal function meant to be used by user-facing
+code.  See `geiser-scsh-disassemble-region' for an example."
   (let* ((code (concat "(ge:disassemble " str ")"))
 	 (ret (geiser-eval--send/wait code))
 	 (raw (cdr (assoc 'output ret)))
