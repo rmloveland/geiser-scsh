@@ -511,8 +511,17 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 
 (defun geiser-scsh-disassemble-region (start end)
   (interactive "r")
-  (let* ((str (buffer-substring-no-properties start end))
-	 (code (concat "(ge:disassemble " str ")"))
+  (let* ((str (buffer-substring-no-properties start end)))
+    (geiser-scsh--really-disassemble str)))
+
+(defun geiser-scsh-disassemble-thing-at-point ()
+  (interactive)
+  (let* ((it (thing-at-point 'symbol t)))
+    (geiser-scsh--really-disassemble it)))
+
+(defun geiser-scsh--really-disassemble (str)
+  ;; String -> IO! State!
+  (let* ((code (concat "(ge:disassemble " str ")"))
 	 (ret (geiser-eval--send/wait code))
 	 (raw (cdr (assoc 'output ret)))
 	 (pass1 (replace-regexp-in-string "#f" "" raw))
@@ -526,6 +535,7 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 ;;++ namespace.
 
 (define-key scheme-mode-map (kbd "C-c RET C-d") #'geiser-scsh-disassemble-region)
+(define-key scheme-mode-map (kbd "C-c RET D") #'geiser-scsh-disassemble-thing-at-point)
 
 ;;; Implementation definition:
 
