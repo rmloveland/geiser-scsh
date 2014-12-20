@@ -460,13 +460,6 @@ code.  See `geiser-scsh-disassemble-region' for an example."
     (with-output-to-temp-buffer bufname
       (princ pass2))))
 
-;;++ Not the right place to put this.  This keybinding and the
-;;++ disassembly code should probably be in the 'GEISER-DEBUG*'
-;;++ namespace.
-
-(define-key scheme-mode-map (kbd "C-c RET C-d") #'geiser-scsh-disassemble-region)
-(define-key scheme-mode-map (kbd "C-c RET D") #'geiser-scsh-disassemble-thing-at-point)
-
 ;;; Implementation definition:
 
 (define-geiser-implementation scsh
