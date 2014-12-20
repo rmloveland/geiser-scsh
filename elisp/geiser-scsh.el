@@ -156,7 +156,7 @@ This function uses `geiser-scsh-init-file' if it exists."
     (t (format "(ge:%s %s)" proc linearized-args)))))
 
 (defvar geiser-scsh--module-re
-  "scheme48-package: +\\([a-z\-]+\\)")
+  "scheme48-package: +(\\([a-z\-]+\\))")
 
 (defvar geiser-scsh--library-re geiser-scsh--module-re)
 
