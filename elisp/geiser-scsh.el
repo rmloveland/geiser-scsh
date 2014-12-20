@@ -42,7 +42,7 @@ started."
   :type '(repeat file)
   :group 'geiser-scsh)
 
-(geiser-custom--defcustom geiser-scsh-init-file ""
+(geiser-custom--defcustom geiser-scsh-init-file "~/.scsh"
   "Initialization file with user code for the scsh REPL.
 If all you want is to load ~/.scsh, set
 `geiser-scsh-load-init-file-p' instead."
@@ -447,7 +447,7 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 	 ;;++ `geiser-scheme-dir' before running scsh (for now).
 	 (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
 	 (load-geiser-cmd (format ",translate =geiser-scsh-dir/ %s" path))
-	 (load-init-file-cmd (concat ",user ,load " geiser-scsh-init-file))
+	 (load-init-file-cmd (concat ",user ,load " (expand-file-name geiser-scsh-init-file)))
 	 (load-cmd ",exec ,load =geiser-scsh-dir/load.scm"))
     (geiser-scsh--set-load-path)
     (geiser-eval--send/wait load-geiser-cmd)
