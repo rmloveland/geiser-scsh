@@ -198,8 +198,6 @@ This function uses `geiser-scsh-init-file' if it exists."
 
 (defun geiser-scsh--exit-command () ",exit")
 
-;;++ Note to self: the definition of this function may need to be
-;;++ updated once you understand its purpose.
 (defun geiser-scsh--symbol-begin (module)
   (if module
       (max (save-excursion (beginning-of-line) (point))
@@ -225,16 +223,15 @@ This function uses `geiser-scsh-init-file' if it exists."
   (when (stringp msg)
     (save-excursion (insert msg))))
 
-;;++ This regex is likely to be really, really wrong.
 (defvar geiser-scsh--guess-re
-  (format "\\(%s\\|#! *.+\\(/\\| \\)scsh\\( *\\\\\\)?\\)"
+  (format "\\(%s\\|#![a-z/]+scsh\\( *\\\\\\)?\\)"
           geiser-scsh--module-re))
 
 (defun geiser-scsh--guess ()
   (save-excursion
     (goto-char (point-min))
     (re-search-forward
-     geiser-scsh--module-re
+     geiser-scsh--guess-re
      nil t)))
 
 (defun geiser-scsh--keywords ()
@@ -243,8 +240,6 @@ This function uses `geiser-scsh-init-file' if it exists."
        . 1))))
 
 
-
-;;++ Special indentation for Scheme 48 and scsh syntax.
 
 (geiser-syntax--scheme-indent
  (c-declare 0)
@@ -372,9 +367,6 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 
 
 (defun geiser-scsh--startup (remote)
-  ;;++ This local variable is probably unnecessary for scsh.  At some
-  ;;++ point we'll want to remove all compilation-related code from this
-  ;;++ file (See also: evaluation.scm).
   (set (make-local-variable 'compilation-error-regexp-alist)
        `((,geiser-scsh--path-rx geiser-scsh--resolve-file-x)
          ("^  +\\([0-9]+\\):\\([0-9]+\\)" nil 1 2)))
@@ -383,8 +375,6 @@ The new level is set using the value of `geiser-scsh-warning-level'."
                           `((,geiser-scsh--path-rx 1
 						   compilation-error-face)))
   (let* ((geiser-log-verbose-p t)
-	 ;;++ Note that you need to manually set the value of
-	 ;;++ `geiser-scheme-dir' before running scsh (for now).
 	 (path (expand-file-name "scsh/geiser/" geiser-scheme-dir))
 	 (load-geiser-cmd (format ",translate =geiser-scsh-dir/ %s" path))
 	 (load-init-file-cmd (concat ",user ,load " (expand-file-name geiser-scsh-init-file)))
@@ -421,13 +411,12 @@ The new level is set using the value of `geiser-scsh-warning-level'."
     (switch-to-buffer-other-window "*info*"))
   (search-forward (format "%s" id) nil t))
 
-;;++ This function (snarfed from geiser-connection.el) needed to be
-;;++ redefined in order for Geiser's scsh connection to work at all --
-;;++ this is because the original version of this function was inserting
-;;++ spurious newlines into the regular expression that the 'tq' package
-;;++ uses to determine where process output ends.  This caused the regex
-;;++ not to match, so that 'tq' didn't know the process's output was
-;;++ ready.
+;; ++ This function (snarfed from 'geiser-connection.el') needed to be
+;; redefined in order for Geiser's scsh connection to work at all --
+;; the original version was inserting spurious newlines into the
+;; regular expression that the 'tq' package uses to determine where
+;; process output ends.  This caused the regex not to match, so that
+;; 'tq' didn't know the process's output was ready.
 (defun geiser-con--connection-eot-re (prompt debug)
   (geiser-con--combined-prompt (format "%s" prompt)
                                (and debug (format "%s" debug))))
@@ -435,19 +424,11 @@ The new level is set using the value of `geiser-scsh-warning-level'."
 
 
 ;;++ This needed to be set because its default value, NIL, was being
-;;++ FUNCALLed, which was making Emacs unhappy.  I'm sure there is
-;;++ a better way to do this.
+;; FUNCALLed, which was making Emacs unhappy.  Need to investigate the
+;; right way to do this.
 (setq geiser-eval--get-module-function #'geiser-scsh--get-module)
 
-
 ;;; Rudimentary support for the scsh/s48 disassembler.
-
-;; Pops open a temp buffer with the disassembly output of the current
-;; region.
-
-;;++ This should work recursively, e.g., in cases where the
-;;++ disassembly output shows '(global vector-ref)', we should be able to
-;;++ see the disassembly output of 'vector-ref' too, if we choose.
 
 (defun geiser-scsh-disassemble-region (start end)
   ;; Int Int -> State!
