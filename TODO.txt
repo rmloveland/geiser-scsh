@@ -1,163 +1,128 @@
-			   Geiser Scsh TODO
-			    Rich Loveland
-			   r@rmloveland.com
+Geiser Scsh TODO
+================
 
-* Implementation status of Geiser commands
+Implementation status of Geiser commands
+----------------------------------------
 
-  key           binding                                          works?
-  ---           -------                                          ------
-  
-  TAB		geiser-repl-tab-dwim                             No
-  C-.		geiser-completion--complete-module               No
-  <backtab>	geiser-repl--previous-error                      No
-  
-  C-M-i		completion-at-point                              Yes
-  M-.		geiser-edit-symbol-at-point                      No
-  M-`		geiser-completion--complete-module               No
+          key           binding                                          works?
+          ---           -------                                          ------
+          
+          TAB		    geiser-repl-tab-dwim                             No
+          C-.		    geiser-completion--complete-module               No
+          <backtab>	    geiser-repl--previous-error                      No
+          
+          C-M-i		    completion-at-point                              Yes
+          M-.		    geiser-edit-symbol-at-point                      No
+          M-`		    geiser-completion--complete-module               No
+          
+          C-c TAB	    geiser-repl-import-module                        Yes
+          C-c RET	    switch-to-geiser-module                          Yes
+          C-c C-q	    geiser-repl-exit                                 Yes
+          C-c C-r	    geiser-add-to-load-path                          Yes
+          C-c C-z	    switch-to-geiser                                 Yes
+        
+          C-c C-d C-a	geiser-autodoc-mode                              No
+          C-c C-d C-d	geiser-doc-symbol-at-point                       No
+          C-c C-d TAB	geiser-doc-look-up-manual                        No
+          C-c C-d RET	geiser-repl--doc-module                          No
+          C-c C-d a	    geiser-autodoc-mode                              No
+          C-c C-d d	    geiser-doc-symbol-at-point                       No
+          C-c C-d i	    geiser-doc-look-up-manual                        Yes
+          C-c C-d m	    geiser-repl--doc-module                          No
+          
+          C-c M-o       geiser-repl-clear-buffer                         Yes
+          C-x C-e       geiser-eval-last-sexp                            Yes
+        
+          C-M-x		    geiser-eval-definition                           Yes
+          M-,		    geiser-pop-symbol-stack                          No
+        
+          C-c C-a       geiser-mode-switch-to-repl-and-enter             No
+          C-c C-b	    geiser-eval-buffer                               Yes
+          C-c C-k	    geiser-compile-current-buffer                    No
+          C-c C-r	    geiser-eval-region                               Yes
+          C-c C-s	    geiser-set-scheme                                Yes
+          C-c C-z	    geiser-mode-switch-to-repl                       Yes
+          C-c C-\	    geiser-insert-lambda                             Yes
+          C-c <		    geiser-xref-callers                              No
+          C-c >		    geiser-xref-callees                              No
+          C-c \		    geiser-insert-lambda                             Yes
+        
+          C-c M-b	    geiser-eval-buffer-and-go                        Yes
+          C-c M-e	    geiser-eval-definition-and-go                    Yes
+          C-c M-r	    geiser-eval-region-and-go                        Yes
+        
+          C-c RET C-e	geiser-expand-last-sexp                          Yes
+          C-c RET C-r	geiser-expand-region                             Yes
+          C-c RET C-x	geiser-expand-definition                         Yes
+          C-c RET e	    geiser-expand-last-sexp                          Yes
+          C-c RET r	    geiser-expand-region                             Yes
+          C-c RET x	    geiser-expand-definition                         Yes
+        
+          C-c C-d RET	geiser-doc-module                                No
+          C-c C-d C-s	geiser-autodoc-show                              No
+          C-c C-d m	    geiser-doc-module                                No
+          C-c C-d s	    geiser-autodoc-show                              No
+        
+          C-c C-e C-l	geiser-add-to-load-path                          Yes
+          C-c C-e RET	geiser-edit-module                               No
+          C-c C-e ESC	geiser-squarify                                  Yes
+          C-c C-e [	    geiser-squarify                                  Yes
+          C-c C-e l	    geiser-add-to-load-path                          Yes
+          C-c C-e m	    geiser-edit-module                               No
 
-  C-c TAB	geiser-repl-import-module                        Yes
-  C-c RET	switch-to-geiser-module                          Yes
-  C-c C-q	geiser-repl-exit                                 Yes
-  C-c C-r	geiser-add-to-load-path                          Yes
-  C-c C-z	switch-to-geiser                                 Yes
+Things still to do
+------------------
 
-  C-c C-d C-a	geiser-autodoc-mode                              No
-  C-c C-d C-d	geiser-doc-symbol-at-point                       No
-  C-c C-d TAB	geiser-doc-look-up-manual                        No
-  C-c C-d RET	geiser-repl--doc-module                          No
-  C-c C-d a	geiser-autodoc-mode                              No
-  C-c C-d d	geiser-doc-symbol-at-point                       No
-  C-c C-d i	geiser-doc-look-up-manual                        Yes
-  C-c C-d m	geiser-repl--doc-module                          No
-  
-  C-c M-o       geiser-repl-clear-buffer                         Yes
-  C-x C-e       geiser-eval-last-sexp                            Yes
++ Fix GE:EVAL to use the right package
 
-  C-M-x		geiser-eval-definition                           Yes
-  M-,		geiser-pop-symbol-stack                          No
+    + The way you call out to scheme from elisp in `geiser-scsh--geiser-procedure' is not the right way.  You need to evaluate the code in the right package/module.
 
-  C-c C-a       geiser-mode-switch-to-repl-and-enter             No
-  C-c C-b	geiser-eval-buffer                               Yes
-  C-c C-k	geiser-compile-current-buffer                    No
-  C-c C-r	geiser-eval-region                               Yes
-  C-c C-s	geiser-set-scheme                                Yes
-  C-c C-z	geiser-mode-switch-to-repl                       Yes
-  C-c C-\	geiser-insert-lambda                             Yes
-  C-c <		geiser-xref-callers                              No
-  C-c >		geiser-xref-callees                              No
-  C-c \		geiser-insert-lambda                             Yes
++ Make APROPOS and APROPOS-ALL into REPL commands
 
-  C-c M-b	geiser-eval-buffer-and-go                        Yes
-  C-c M-e	geiser-eval-definition-and-go                    Yes
-  C-c M-r	geiser-eval-region-and-go                        Yes
-
-  C-c RET C-e	geiser-expand-last-sexp                          Yes
-  C-c RET C-r	geiser-expand-region                             Yes
-  C-c RET C-x	geiser-expand-definition                         Yes
-  C-c RET e	geiser-expand-last-sexp                          Yes
-  C-c RET r	geiser-expand-region                             Yes
-  C-c RET x	geiser-expand-definition                         Yes
-
-  C-c C-d RET	geiser-doc-module                                No
-  C-c C-d C-s	geiser-autodoc-show                              No
-  C-c C-d m	geiser-doc-module                                No
-  C-c C-d s	geiser-autodoc-show                              No
-
-  C-c C-e C-l	geiser-add-to-load-path                          Yes
-  C-c C-e RET	geiser-edit-module                               No
-  C-c C-e ESC	geiser-squarify                                  Yes
-  C-c C-e [	geiser-squarify                                  Yes
-  C-c C-e l	geiser-add-to-load-path                          Yes
-  C-c C-e m	geiser-edit-module                               No
-
-* Things still to do!
-
-** Implement 'geiser-disassemble-*'
-
-On the Scheme side, you will have to implement GE:DISASSEMBLE.  Use
-the 'disassembler' package:
-
-> ,open disassembler
-> (disassemble (lambda () (if (= 12 12) #t)))  ; Must be proc/cont.
-
-See ~/Desktop/current/foo.scm for the implementation of GE:DISASSEMBLE.
-
-On the Elisp side, you will have to implement the disassembler analogs
-to the GEISER-EXPAND-* functions.  These don't appear to exist in
-"stock" Geiser.
-
-** Make APROPOS and APROPOS-ALL into REPL commands
-
-   We should be able to call like so:
+    + We should be able to call like so:
    
-   > ,apropos-all 'foo   
+       > ,apropos-all 'foo
 
-** Get crossreferencing (xref) working
++ Get crossreferencing (xref) working
 
-   See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some
-   details about how to accomplish this.
+    + See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some details about how to accomplish this.
 
-* Things already done
++ Once `,apropos*` commands are implemented, we should be able to run them on thing at point with a keybinding and see the results in a new ({org,outline}-mode) buffer.
 
-** Remove IOTA from doc.scm
+Things already done
+-------------------
 
-Scsh already provides this in SRFI-1.
++ Implement `GEISER-DISASSEMBLE-*`
+    + On the Scheme side, you will have to implement `GE:DISASSEMBLE`.  Use the `disassembler` package:
 
-** Include Campbell's APROPOS.SCM?
+            > ,open disassembler
+            > (disassemble (lambda () (if (= 12 12) #t)))  ; Must be proc/cont.
 
-It would be really nifty to have a command like `geiser-scsh-apropos',
-bound to something like `C-c C-d (C-)p', that ran APROPOS-ALL on the
-symbol at point and sent its output to a separate buffer a la the
-macroexpansion things.
+    + On the Elisp side, you will have to implement the disassembler analogs to the `GEISER-EXPAND-*` functions.  These don't appear to exist in "stock" Geiser.
 
-Tue Feb 4 22:55:11 2014:
++ Remove `IOTA` from doc.scm: Scsh already provides this in SRFI-1.
 
-I've cheated and just loaded apropos.scm at startup, so it's there in
-the REPL.  Not the most elegant solution, but it saves me having to
-load it in every session.  This should really be loaded as part of my
-personal scsh environment, not here.
++ Include Campbell's apropos.scm: It would be really nifty to have a command like `geiser-scsh-apropos`, bound to something like `C-c C-d (C-)p`, that ran `APROPOS-ALL` on the symbol at point and sent its output to a separate buffer a la the macroexpansion things.
 
-** Write some kind of `Get Started' guide detailing the settings you need
+    + *Tue Feb 4 22:55:11 2014:* I've cheated and just loaded apropos.scm at startup, so it's there in the REPL.  Not the most elegant solution, but it saves me having to load it in every session.  This should really be loaded as part of my personal scsh environment, not here.
 
-Tue Feb  4 22:58:48 2014:
++ Write some kind of `Get Started' guide detailing the settings you need
 
-Published at
-http://logicgrimoire.wordpress.com/2014/01/11/geiser-and-scsh-are-talking
+    + *Tue Feb  4 22:58:48 2014:* Published instructions in [a blog post](http://logicgrimoire.wordpress.com/2014/01/11/geiser-and-scsh-are-talking).  (Also in the README).
 
-** Get `geiser-repl-import-module' working
++ Get `geiser-repl-import-module` working
 
-Tue Feb 4 22:58:00 2014:
+    + *Tue Feb 4 22:58:00 2014:* This appears to be working now, might have just had a wee misconfiguration somewhere.
 
-This appears to be working now, might have just had a wee
-misconfiguration somewhere.
++ Add scsh to Geiser's list of active implementations programmatically?  Figure out how to do this the right way at Geiser load time, so the user doesn't have to do M-x customize.
 
-** Add scsh to Geiser's list of active implementations programmatically?
+    + *Tue Jan  7 22:47:15 2014:* No, let's leave it to the user for now.
 
-Figure out how to do this the right way at Geiser load time, so the
-user doesn't have to do M-x customize.
-
-Tue Jan  7 22:47:15 2014:
-
-No, let's leave it to the user for now.
-
-** Port remaining Scheme files
-
-Note that we use the term ``port'' lightly; we mean simply that the
-most basic, nonfunctional versions of all of the interfaces are
-exported by each module.
-
-- emacs.scm
-- evaluation.scm
-- doc.scm
-- xref.scm (depends on doc.scm)
-
-** Port completion.scm
-
-** Port modules.scm
-
-** Port utils.scm to scsh
-
-
-Local Variables:
-Mode: Outline
-End:
++ Port remaining Scheme files (Note that we use the term "port" lightly; we mean simply that the most basic, nonfunctional versions of all of the interfaces are exported by each module):
+    + emacs.scm
+    + evaluation.scm
+    + doc.scm
+    + xref.scm (depends on doc.scm)
+    + Port completion.scm
+    + Port modules.scm
+    + Port utils.scm
