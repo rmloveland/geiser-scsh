@@ -237,66 +237,6 @@ This function uses `geiser-scsh-init-file' if it exists."
      geiser-scsh--module-re
      nil t)))
 
-
-
-;;++ Additional keywords and syntax -- this should probably be left to
-;;++ the user during customization, but right now I'm the only user. :-}
-;;++ Note that these keywords are taken from Scheme48 mode:
-;;++ http://www.emacswiki.org/cgi-bin/emacs/Scheme48Mode
-
-(setq geiser-scsh-extra-keywords '("dynamic-wind"
-				   "destructure"
-				   "enum-case"
-				   "environment-define!"
-				   "environment-set!"
-				   "guard"
-				   "iterate"
-				   "make-usual-resumer"
-				   "mvlet"
-				   "mvlet*"
-				   "search-tree-modify!"
-				   "usual-resumer"
-				   "with-exception-handler"
-				   "with-handler"
-				   "with-interaction-environment"
-				   "with-nondeterminism"
-				   "call-with-current-input-port"
-				   "call-with-current-noise-port"
-				   "call-with-current-output-port"
-				   "call-with-string-output-port"
-				   "limit-output"
-				   "recurring-write"
-				   "silently"
-				   "with-current-ports"
-				   "define-interface"
-				   "define-structure"
-				   "structure"
-				   "structures"
-				   "atomically"
-				   "atomically!"
-				   "call-ensuring-atomicity"
-				   "call-ensuring-atomicity!"
-				   "ensure-atomicity"
-				   "ensure-atomicity!"
-				   "interrupt-thread"
-				   "let-fluid"
-				   "let-fluids"
-				   "spawn-on-scheduler"
-				   "with-new-proposal"
-				   "with-current-input-port"
-				   "with-current-output-port"
-				   "awk"
-				   "close-after"
-				   "if-match"
-				   "with-cwd"
-				   "with-cwd*"
-				   "let-optionals"
-				   "let-optionals*"
-				   "and-let*"
-				   "receive"
-				   "let-values"
-				   "let*-values"))
-
 (defun geiser-scsh--keywords ()
   (when geiser-scsh-extra-keywords
     `((,(format "[[(]%s\\>" (regexp-opt geiser-scsh-extra-keywords 1))
