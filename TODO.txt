@@ -66,18 +66,23 @@ Implementation status of Geiser commands
           C-c C-e C-l	geiser-add-to-load-path                          Yes
           C-c C-e RET	geiser-edit-module                               No
           C-c C-e ESC	geiser-squarify                                  Yes
-          C-c C-e [	    geiser-squarify                                  Yes
           C-c C-e l	    geiser-add-to-load-path                          Yes
           C-c C-e m	    geiser-edit-module                               No
 
 Things still to do
 ------------------
 
-+ Fix GE:EVAL to use the right package
++ Disassembly functions should work recursively, as the macroexpanders do.
+
++ Find out what `GEISER-SCSH--SYMBOL-BEGIN` is used for
+
++ Remove compilation regexp stuff from 'geiser-scsh.el' (it doesn't really apply)
+
++ Fix `GE:EVAL` to use the right package
 
     + The way you call out to scheme from elisp in `geiser-scsh--geiser-procedure' is not the right way.  You need to evaluate the code in the right package/module.
 
-+ Make APROPOS and APROPOS-ALL into REPL commands
++ Make `APROPOS` and `APROPOS-ALL` into REPL commands
 
     + We should be able to call like so:
    
