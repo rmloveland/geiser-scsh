@@ -27,7 +27,7 @@ Implementation status of Geiser commands
           C-c C-d RET	geiser-repl--doc-module                          No
           C-c C-d a	    geiser-autodoc-mode                              No
           C-c C-d d	    geiser-doc-symbol-at-point                       No
-          C-c C-d i	    geiser-doc-look-up-manual                        Yes
+          C-c C-d i	    geiser-doc-look-up-manual                        No
           C-c C-d m	    geiser-repl--doc-module                          No
           
           C-c M-o       geiser-repl-clear-buffer                         Yes
@@ -72,6 +72,8 @@ Implementation status of Geiser commands
 Things still to do
 ------------------
 
++ Can't seem to get the info lookup to stick; might need to ask around in #emacs
+
 + Disassembly functions should work recursively, as the macroexpanders do.
 
 + Find out what `GEISER-SCSH--SYMBOL-BEGIN` is used for
@@ -91,6 +93,8 @@ Things still to do
 + Get crossreferencing (xref) working
 
     + See 'scheme/scsh/geiser/xref.scm'.  Also, Campbell's SLIME48 for some details about how to accomplish this.
+
++ Get procedure argument autodoc working
 
 + Once `,apropos*` commands are implemented, we should be able to run them on thing at point with a keybinding and see the results in a new ({org,outline}-mode) buffer.
 
@@ -123,6 +127,12 @@ Things already done
 
     + *Tue Jan  7 22:47:15 2014:* No, let's leave it to the user for now.
 
++ Fix comint (?) to accept pipe characters
+
+    + These work fine when you run scsh from the terminal, but not in Emacs/Geiser
+
++ Fix completion at point so it works on "bare" filenames outside strings (as scsh process notation expects.
+
 + Port remaining Scheme files (Note that we use the term "port" lightly; we mean simply that the most basic, nonfunctional versions of all of the interfaces are exported by each module):
     + emacs.scm
     + evaluation.scm
@@ -131,3 +141,8 @@ Things already done
     + Port completion.scm
     + Port modules.scm
     + Port utils.scm
+
+
+Local variables:
+Mode: Markdown
+End:
