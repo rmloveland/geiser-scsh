@@ -136,6 +136,30 @@ This function uses `geiser-scsh-init-file' if it exists."
 (defvar geiser-scsh--prompt-regexp "^[0-9]?> ")
 (defvar geiser-scsh--debugger-prompt-regexp "^inspect: ")
 
+;; This addition to the Scheme syntax table is necessary to support
+;; scsh's pipe notation.
+(modify-syntax-entry ?| "_ p" scheme-mode-syntax-table)
+
+(defun geiser-scsh--syntax-in-filename-p ()
+  (save-excursion
+    (let ((val (re-search-backward "\\( +~\\| +/\\)" nil t 1)))
+      val)))
+
+(defun geiser-scsh--completion-for-filename ()
+  (when (geiser-scsh--syntax-in-filename-p)
+    (let ((comint-completion-addsuffix "\""))
+      (comint-dynamic-complete-filename))))
+
+;; ++ Is there a better way to do this?
+(defun geiser-completion--setup (enable)
+  (set (make-local-variable 'completion-at-point-functions)
+       (if enable
+           '(geiser-completion--for-symbol
+             geiser-completion--for-module
+	     geiser-scsh--completion-for-filename
+             geiser-completion--for-filename)
+         (default-value 'completion-at-point-functions))))
+
 ;;; Evaluation support:
 
 (defsubst geiser-scsh--linearize-args (args)
