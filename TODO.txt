@@ -72,6 +72,8 @@ Implementation status of Geiser commands
 Things still to do
 ------------------
 
++ Change order in which `GEISER-SCSH--COMPLETION-FOR-FILENAME` is added to `COMPLETION-AT-POINT-FUNCTIONS`.  Currently, it's first in the list, when it should be last (in other words, it should only run after all other completion functions have failed).
+
 + Can't seem to get the info lookup to stick; might need to ask around in #emacs
 
 + Disassembly functions should work recursively, as the macroexpanders do.
