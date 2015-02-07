@@ -150,7 +150,10 @@ This function uses `geiser-scsh-init-file' if it exists."
     (let ((comint-completion-addsuffix "\""))
       (comint-dynamic-complete-filename))))
 
-;; ++ Is there a better way to do this?
+;; ++ We override this internal geiser function to add
+;; `geiser-scsh--completion-for-filename'.  This allows us to complete
+;; on filenames that are not surrounded double quotes, as used in the
+;; scsh process notation.
 (defun geiser-completion--setup (enable)
   (set (make-local-variable 'completion-at-point-functions)
        (if enable
@@ -435,28 +438,28 @@ The new level is set using the value of `geiser-scsh-warning-level'."
     (switch-to-buffer-other-window "*info*"))
   (search-forward (format "%s" id) nil t))
 
-;; ++ This function (snarfed from 'geiser-connection.el') needed to be
-;; redefined in order for Geiser's scsh connection to work at all --
-;; the original version was inserting spurious newlines into the
-;; regular expression that the 'tq' package uses to determine where
-;; process output ends.  This caused the regex not to match, so that
-;; 'tq' didn't know the process's output was ready.
+;; ++ We override this internal geiser function so that geiser can
+;; connect to scsh.  The original function inserts newlines into the
+;; regular expression used by the `tq' package to determine where
+;; scsh's process output ends.  Unfortunately, the resulting regex
+;; doesn't match scsh's output; thus `tq' never knows that scsh's
+;; output is ready, and the REPL hangs.
 (defun geiser-con--connection-eot-re (prompt debug)
   (geiser-con--combined-prompt (format "%s" prompt)
                                (and debug (format "%s" debug))))
 
 
 
-;;++ This needed to be set because its default value, NIL, was being
-;; FUNCALLed, which was making Emacs unhappy.  Need to investigate the
-;; right way to do this.
+;; ++ We override this internal variable because its default value,
+;; `nil', was being passed to `funcall', which was making Emacs
+;; unhappy.
 (setq geiser-eval--get-module-function #'geiser-scsh--get-module)
 
-;;; Rudimentary support for the scsh/s48 disassembler.
+;;; Support for the scsh/s48 disassembler
 
 (defun geiser-scsh-disassemble-region (start end)
   ;; Int Int -> State!
-  "Attempt to disassemble the region between START and END.
+  "Disassemble the scsh code in the region between START and END.
 Opens a new buffer with the output of the disassembler."
   (interactive "r")
   (let* ((str (buffer-substring-no-properties start end)))
@@ -464,17 +467,16 @@ Opens a new buffer with the output of the disassembler."
 
 (defun geiser-scsh-disassemble-thing-at-point ()
   ;; -> State!
-  "Attempt to disassemble the thing at point.
+  "Disassemble the scsh symbol at point.
 Opens a new buffer with the output of the disassembler."
   (interactive)
   (let* ((it (thing-at-point 'symbol t)))
     (geiser-scsh--really-disassemble it)))
 
+;; ++ The way we construct the scsh code and fiddle with regexps here
+;; is a kludge.
 (defun geiser-scsh--really-disassemble (str)
   ;; String -> State!
-  "Pass STR to the Scheme disassembler.
-This is an internal function meant to be used by user-facing
-code.  See `geiser-scsh-disassemble-region' for an example."
   (let* ((code (concat "(ge:disassemble " str ")"))
 	 (ret (geiser-eval--send/wait code))
 	 (raw (cdr (assoc 'output ret)))
