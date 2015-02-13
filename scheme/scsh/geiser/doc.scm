@@ -35,11 +35,11 @@
   (let ((args (obj-args obj)))
     (and args (signature name args))))
 
-(define (%autodoc id)			
+(define (%autodoc id)
   (let ((args (obj-args (ge:symbol->object id))))
     (and args
-         `(,@(signature id args)
-           ("module" . ,(ge:symbol-module id))))))
+	 `(,@(signature id args)
+	   ("module" . ,(ge:symbol-module id))))))
 
 (define (ge:autodoc ids)
   (if (not (list? ids))
@@ -68,9 +68,10 @@
 
 (define (procedure-property obj key)	
   ;; Procedure Symbol -> Symbol OR #f
-  (let ((retval (table-ref *procedure-properties-table* obj)))
-    (if retval
-	(cdr (assoc key retval))
+  (let* ((table-val (table-ref *procedure-properties-table* obj))
+	 (key-val (assoc key table-val)))
+    (if key-val
+	(cdr key-val)
 	#f)))
 
 (define (value-str obj)
@@ -102,31 +103,37 @@
 ;;++ This procedure will come in handy once we can actually get hold
 ;;++ of the source of Scsh procedures. Not yet, though.
 (define (source->args src)
-  (let ((formals (cadr src)))
-    (cond ((list? formals) `((required . ,formals)))
-          ((pair? formals)
-           `((required . ,(car formals)) (rest . ,(cdr formals))))
-          (else #f))))
+  (if src
+      (let ((formals (cadr src)))
+	(cond ((list? formals) `((required . ,formals)))
+	      ((pair? formals)
+	       `((required . ,(car formals)) (rest . ,(cdr formals))))
+	      (else #f)))
+      '()))
 
 (define (arity->args art)
   (define (gen-arg-names count)
     (map (lambda (x) '_) (iota (max count 0))))
-  (let ((req (car art))
-        (opt (cadr art))
-        (rest (caddr art)))
-    `(,@(if (> req 0)
-            (list (cons 'required (gen-arg-names req)))
-            '())
-      ,@(if (> opt 0)
-            (list (cons 'optional (gen-arg-names opt)))
-            '())
-      ,@(if rest (list (cons 'rest 'rest)) '()))))
+  (if art
+      (let ((req (car art))
+	    (opt (cadr art))
+	    (rest (caddr art)))
+	`(,@(if (> req 0)
+		(list (cons 'required (gen-arg-names req)))
+		'())
+	  ,@(if (> opt 0)
+		(list (cons 'optional (gen-arg-names opt)))
+		'())
+	  ,@(if rest (list (cons 'rest 'rest)) '())))
+      '()))
 
 (define (arglist->args arglist)		
-  `((required . ,(car arglist))
-    (optional . ,(cadr arglist))
-    (keyword . ,(caddr arglist))
-    (rest . ,(car (cddddr arglist)))))
+  (if arglist
+      `((required . ,(car arglist))
+	(optional . ,(cadr arglist))
+	(keyword . ,(caddr arglist))
+	(rest . ,(car (cddddr arglist))))
+      '()))
 
 (define (obj-signature sym obj)
   (let ((args (obj-args obj)))
