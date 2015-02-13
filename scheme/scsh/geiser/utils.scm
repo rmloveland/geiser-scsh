@@ -9,11 +9,23 @@
 ;; not, see <http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5>.
 
 (define (ge:symbol->object sym)
-  (and (symbol? sym)
-       (ge:bound? sym)))
+  (cond ((symbol? sym)
+	 (ge:bound? sym))
+	((procedure? sym)
+	 (let ((qsym (quote sym)))
+	   (ge:bound? qsym)))))
 
+;; ,open meta-types disclosers
 (define (ge:bound? name)
-  (package-lookup (environment-for-commands) name))
+  (let ((val (package-lookup (environment-for-commands) name)))
+    (if val
+	(let* ((type (vector-ref val 0))
+	       (loc (vector-ref val 1))
+	       (junk (vector-ref val 2))
+	       (ptype (type->sexp type #f))
+	       (ploc (location-name loc)))
+	  (list ptype ploc junk))
+	#f)))
 
 (define (ge:pair->list pair)
   (let loop ((d pair) (s '()))

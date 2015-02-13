@@ -11,8 +11,8 @@
 (define (signature id args-list)
   (let ((value (ge:symbol->object id)))
     (if value
-	(let ((args (vector-ref value 0))
-	      (proc (vector-ref value 1)))
+	(let ((args (second (first value)))
+	      (proc (second value)))
 	  (cons proc
 		(list (cons "args" `(("required" ,args)
 				     ("optional")

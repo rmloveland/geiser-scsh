@@ -14,6 +14,8 @@
 	big-util
 	re-old-funs
 	formats
+	meta-types
+	disclosers
 	sorting
 	packages
 	command-processor)
