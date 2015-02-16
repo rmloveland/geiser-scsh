@@ -470,7 +470,7 @@ Opens a new buffer with the output of the disassembler."
   "Disassemble the scsh symbol at point.
 Opens a new buffer with the output of the disassembler."
   (interactive)
-  (let* ((it (thing-at-point 'symbol t)))
+  (let* ((it (thing-at-point 'symbol)))
     (geiser-scsh--really-disassemble it)))
 
 ;; ++ The way we construct the scsh code and fiddle with regexps here
