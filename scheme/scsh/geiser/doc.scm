@@ -10,8 +10,9 @@
 
 (define (signature id args-list)
   (let ((value (ge:symbol->object id)))
-    (if value
-	(let ((args (second (first value)))
+    (if (and (list? value)
+	     (not (null? value)))
+	(let ((args (second `(quote ,(first value))))
 	      (proc (second value)))
 	  (cons proc
 		(list (cons "args" `(("required" ,args)
