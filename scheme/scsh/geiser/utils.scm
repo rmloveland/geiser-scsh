@@ -15,6 +15,19 @@
 	 (let ((qsym (quote sym)))
 	   (ge:bound? qsym)))))
 
+(define (map* leaf-func tree)
+  (cond ((null? tree) '())
+	((symbol? tree)
+	 (leaf-func tree))
+	((boolean? (car tree))
+	 (cons (car tree)
+	       (map* leaf-func (cdr tree))))
+	((symbol? (car tree))
+	 (cons (leaf-func (car tree))
+	       (map* leaf-func (cdr tree))))
+	(else (cons (map* leaf-func (car tree))
+		    (map* leaf-func (cdr tree))))))
+
 ;; ,open meta-types disclosers
 (define (ge:bound? name)
   (let ((val (package-lookup (environment-for-commands) name)))
@@ -22,7 +35,7 @@
 	(let* ((type (vector-ref val 0))
 	       (loc (vector-ref val 1))
 	       (junk (vector-ref val 2))
-	       (ptype (type->sexp type #f))
+	       (ptype (map* symbol->string (type->sexp type #f)))
 	       (ploc (location-name loc)))
 	  (list ptype ploc junk))
 	#f)))
