@@ -72,7 +72,11 @@ Implementation status of Geiser commands
 Things still to do
 ------------------
 
-+ Geiser-scsh hangs when you are working in a different package where `GE:EVAL` and friends aren't available.
++ Geiser-scsh hangs when you are working in a different package where `GE:EVAL` and friends aren't available, such as `geiser-doc`.
+
++ Add an interactive Emacs function like `GEISER-SCSH--BOUNDP` or so that will ask scsh if the symbol at point is bound in the current environment.
+
++ Learn how to drive the S48 assembler so that `M-.` is not munging text files, but actually assembling the output of the disassembler.  (At least if this works the way I think it does based on the comment in `env/disasm.scm` that the assembly language is "rereadable".)
 
 + Change order in which `GEISER-SCSH--COMPLETION-FOR-FILENAME` is added to `COMPLETION-AT-POINT-FUNCTIONS`.  Currently, it's first in the list, when it should be last (in other words, it should only run after all other completion functions have failed).
 
