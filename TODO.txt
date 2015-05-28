@@ -92,6 +92,8 @@ Things still to do
 
     + The way you call out to scheme from elisp in `geiser-scsh--geiser-procedure' is not the right way.  You need to evaluate the code in the right package/module.
 
+	+ From the Elisp side, use `(GEISER-SCSH--GET-MODULE)`
+
 + Make `APROPOS` and `APROPOS-ALL` into REPL commands
 
     + We should be able to call like so:
