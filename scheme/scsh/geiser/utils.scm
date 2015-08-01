@@ -68,4 +68,18 @@
 (define (gensym-name? name)
   (and (string-match "^#[{]" name) #t))
 
+(define (string->safe-string s)
+  (if (string-match "^#\\{" s)
+      (let ((safe-string
+	     (regexp-substitute/global
+	      #f
+	      (rx (submatch (: #\# #\{))
+		  (submatch (: (? #\:)
+			       (? #\%)
+			       (+ alphanumeric))))
+	      s ; "#{Undefined}" or "#{:value}"
+	      'pre "(" 2 ")")))
+	safe-string)
+      s))
+
 ;; utils.scm ends here

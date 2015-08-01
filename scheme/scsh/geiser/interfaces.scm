@@ -24,7 +24,8 @@
 	  ge:sort-symbols!
 	  ge:make-symbol-sort
 	  ge:gensym?
-	  ge:bound?))
+	  ge:bound?
+	  string->safe-string))
 
 (define-interface geiser-xref-interface
   (export ge:symbol-location

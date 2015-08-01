@@ -39,6 +39,7 @@
 	packages
 	syntactic
 	geiser-modules
+	geiser-utils
 	nodes
 	srfi-1
 	pp)

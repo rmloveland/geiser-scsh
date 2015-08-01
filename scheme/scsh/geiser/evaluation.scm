@@ -40,7 +40,7 @@
   (let ((the-port (make-string-output-port))
 	(the-string #f))
     (begin (write (eval form module) the-port)
-	   (set! the-string (string-output-port-output the-port))
+	   (set! the-string (string->safe-string (string-output-port-output the-port)))
 	   the-string)))
 
 ;;++ Output of this procedure should be in the format:
