@@ -507,6 +507,26 @@ Opens a new buffer with the output of the disassembler."
          (msg (concat "'" symname "'" " %s")))
     (message msg pass3)))
 
+;; (apropos-all THING)
+
+(defun geiser-scsh-apropos-thing-at-point ()
+  ;; -> State!
+  "Run APROPOS on the symbol at point."
+  (interactive)
+  (let* ((it (thing-at-point 'symbol t)))
+    (geiser-scsh--really-apropos it)))
+
+(defun geiser-scsh--really-apropos (str)
+  ;; String -> State!
+  (let* ((code (concat "(apropos-all (quote " str "))"))
+         (symname (symbol-name (second (second (read code)))))
+         (retval (geiser-eval--send/wait code))
+         (raw (cdr (assoc 'output retval)))
+         (pass1 (replace-regexp-in-string "^> " "" raw))
+         (bufname "* Scsh Apropos Output *"))
+    (with-output-to-temp-buffer bufname
+      (princ pass1))))
+
 ;;; Implementation definition:
 
 (define-geiser-implementation scsh
