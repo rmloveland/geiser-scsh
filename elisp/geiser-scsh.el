@@ -486,6 +486,27 @@ Opens a new buffer with the output of the disassembler."
     (with-output-to-temp-buffer bufname
       (princ pass2))))
 
+;; ,bound? THING
+
+(defun geiser-scsh-boundp-thing-at-point ()
+  ;; -> State!
+  "Determine if the scsh symbol at point is bound."
+  (interactive)
+  (let* ((it (thing-at-point 'symbol t)))
+    (geiser-scsh--really-boundp it)))
+
+(defun geiser-scsh--really-boundp (str)
+  ;; String -> State!
+  (let* ((code (concat "(ge:bound? (quote " str "))"))
+         (symname (symbol-name (second (second (read code)))))
+         (retval (geiser-eval--send/wait code))
+         (raw (cdr (assoc 'output retval)))
+         (pass1 (replace-regexp-in-string "^> " "" raw))
+         (pass2 (replace-regexp-in-string "\n" "" pass1))
+         (pass3 (if (string-equal pass2 "#f") "IS NOT BOUND" "IS BOUND"))
+         (msg (concat "'" symname "'" " %s")))
+    (message msg pass3)))
+
 ;;; Implementation definition:
 
 (define-geiser-implementation scsh
